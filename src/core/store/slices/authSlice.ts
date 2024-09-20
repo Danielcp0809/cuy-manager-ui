@@ -27,7 +27,6 @@ export const authSlice = createSlice({
         },
         setNewTokenData: (state: LoggedSession, action: PayloadAction<LoggedSession>) => {
             state.token = action.payload.token;
-            state.refreshToken = action.payload.refreshToken;
         },
         setLogoutSession: (state: LoggedSession) => {
             state.enterprise = null;
