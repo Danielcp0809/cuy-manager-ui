@@ -18,7 +18,7 @@ import {
 import { NavLink } from "react-router-dom";
 // import HSeparator from "../../../components/separators/HSeparator";
 // Assets
-import illustration from "../../../assets/img/auth/auth.png";
+import illustration from "../../../assets/img/auth/auth2.jpg";
 // import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
