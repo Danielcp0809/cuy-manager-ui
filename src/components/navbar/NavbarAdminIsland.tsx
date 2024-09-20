@@ -38,6 +38,7 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
     "14px 17px 40px 4px rgba(112, 144, 176, 0.18)",
     "14px 17px 40px 4px rgba(112, 144, 176, 0.06)"
   );
+  const adminRoutes = routes.filter((route) => route.layout === "/admin");
   return (
     <Flex
       w={{ sm: "100%", md: "auto" }}
@@ -54,7 +55,7 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
         me="10px"
         borderRadius="30px"
       />
-      <SidebarResponsive routes={routes} />
+      <SidebarResponsive routes={adminRoutes} />
       <Menu>
         {/* notifications menu */}
         <MenuButton p="0px">
