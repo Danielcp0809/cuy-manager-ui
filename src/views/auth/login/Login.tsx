@@ -24,7 +24,7 @@ import { login } from "../../../services/api";
 import AuthDefaultLayout from "../../../layouts/auth/AuthDefaultLayout";
 
 import { useDispatch } from "react-redux";
-import { setLoginSession } from "../../../store/slices/authSlice";
+import { setLoginSession } from "../../../core/store/slices/authSlice";
 
 interface LoginProps {}
 

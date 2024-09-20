@@ -1,8 +1,8 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import Navigation from "./routes/Navigation";
-import theme from "./theme/theme";
+import Navigation from "./core/routes/Navigation";
+import theme from "./core/theme/theme";
 import {
   applyMiddleware,
   compose,
@@ -10,8 +10,8 @@ import {
 } from "redux";
 import storage from "redux-persist/es/storage";
 import { persistReducer, persistStore } from "redux-persist";
-import rootReducer from "./store/reducers/rootReducer";
-import { logger } from "./middlewares/logger";
+import rootReducer from "./core/store/reducers/rootReducer";
+import { logger } from "./core/middlewares/logger";
 import { Provider } from "react-redux";
 
 declare global {

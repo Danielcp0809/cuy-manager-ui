@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAuthEnterprise } from '../../interfaces/auth-enterprise.interface';
+import { IAuthEnterprise } from '../../../interfaces/auth-enterprise.interface';
 
 export interface LoggedSession {
     enterprise?: IAuthEnterprise | null;

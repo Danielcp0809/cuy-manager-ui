@@ -13,9 +13,9 @@ import React from "react";
 import SearchBar from "./searchBar/SearchBar";
 import { MdNotificationsNone } from "react-icons/md";
 import { SidebarResponsive } from "../sidebar/Sidebar";
-import routes from "../../routes/routes";
+import routes from "../../core/routes/routes";
 import { useDispatch } from "react-redux";
-import { setLogoutSession } from "../../store/slices/authSlice";
+import { setLogoutSession } from "../../core/store/slices/authSlice";
 
 interface NavbarAdminIslandProps {
   secondary?: boolean;

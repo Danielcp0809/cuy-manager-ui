@@ -1,6 +1,6 @@
 import { Route } from "react-router-dom";
-import { IRoute } from "../../interfaces/route.interface";
-import AdminLayout from "../../layouts/admin";
+import { IRoute } from "../../../interfaces/route.interface";
+import AdminLayout from "../../../layouts/admin";
 import routes from "../../routes/routes";
 
 const getRoutes: any = (routes: IRoute[]) => {

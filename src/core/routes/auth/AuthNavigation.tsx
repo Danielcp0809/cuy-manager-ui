@@ -1,7 +1,7 @@
 import { Route } from "react-router-dom";
-import { IRoute } from "../../interfaces/route.interface";
+import { IRoute } from "../../../interfaces/route.interface";
 import routes from "../routes";
-import AuthLayout from "../../layouts/auth";
+import AuthLayout from "../../../layouts/auth";
 
 const getRoutes: any = (routes: IRoute[]) => {
   return routes.map((prop: IRoute, key: number) => {

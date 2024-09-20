@@ -1,8 +1,7 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { shallowEqual, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
-import { IRootState } from "../../store/reducers/rootReducer";
-import { useEffect } from "react";
+import { IRootState } from "../../core/store/reducers/rootReducer";
 
 interface AuthLayoutProps {}
 
