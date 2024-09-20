@@ -14,6 +14,8 @@ import SearchBar from "./searchBar/SearchBar";
 import { MdNotificationsNone } from "react-icons/md";
 import { SidebarResponsive } from "../sidebar/Sidebar";
 import routes from "../../routes/routes";
+import { useDispatch } from "react-redux";
+import { setLogoutSession } from "../../store/slices/authSlice";
 
 interface NavbarAdminIslandProps {
   secondary?: boolean;
@@ -39,6 +41,10 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
     "14px 17px 40px 4px rgba(112, 144, 176, 0.06)"
   );
   const adminRoutes = routes.filter((route) => route.layout === "/admin");
+  const dispatch = useDispatch();
+  const handleClickLogOut = () => {
+    dispatch(setLogoutSession());
+  };
   return (
     <Flex
       w={{ sm: "100%", md: "auto" }}
@@ -173,6 +179,7 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
               color="red.400"
               borderRadius="8px"
               px="14px"
+              onClick={handleClickLogOut}
             >
               <Text fontSize="sm">Log out</Text>
             </MenuItem>

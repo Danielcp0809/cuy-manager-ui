@@ -1,19 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Box, Portal, useDisclosure } from "@chakra-ui/react";
 import { IRoute } from "../../interfaces/route.interface";
 import { SidebarContext } from "../../contexts/SidebarContext";
 import Sidebar from "../../components/sidebar/Sidebar";
 import routes from "../../routes/routes";
 import NavbarAdmin from "../../components/navbar/NavbarAdmin";
+import { shallowEqual, useSelector } from "react-redux";
+import { IRootState } from "../../store/reducers/rootReducer";
 
 function AdminLayout(props: any) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { ...rest } = props;
   const [fixed] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
 
   const [brandText, setBrandText] = useState("Default Brand Text"); 
+  const isLoggedIn = useSelector((state: IRootState) => state.auth.isLoggedIn, shallowEqual);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/auth/login', { state: { previousUrl: location.pathname } });
+    }
+  }, [isLoggedIn, location.pathname, navigate]);
 
   useEffect(() => {
     const getActiveRoute = (routes: IRoute[]) => {
@@ -41,11 +51,12 @@ function AdminLayout(props: any) {
     };
     setBrandText(getActiveRoute(routes));
   }, [location]);
+
   const { onOpen } = useDisclosure();
   const adminRoutes = routes.filter((route) => route.layout === "/admin");
-  console.log(adminRoutes);
   return (
-    <Box>
+    isLoggedIn ? (
+      <Box>
       <Box>
         <SidebarContext.Provider
           value={{
@@ -93,6 +104,7 @@ function AdminLayout(props: any) {
         </SidebarContext.Provider>
       </Box>
     </Box>
+    ) : null
   );
 }
 

@@ -1,5 +1,4 @@
 import React from "react";
-import AuthDefaultLayout from "../../../layouts/auth/AuthDefaultLayout";
 import {
   Box,
   Button,
@@ -12,15 +11,20 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Spinner,
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
-// import HSeparator from "../../../components/separators/HSeparator";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 // Assets
 import illustration from "../../../assets/img/auth/auth2.jpg";
-// import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { login } from "../../../services/api";
+
+import AuthDefaultLayout from "../../../layouts/auth/AuthDefaultLayout";
+
+import { useDispatch } from "react-redux";
+import { setLoginSession } from "../../../store/slices/authSlice";
 
 interface LoginProps {}
 
@@ -41,14 +45,46 @@ function Login(props: LoginProps) {
 //     { bg: "secondaryGray.300" },
 //     { bg: "whiteAlpha.200" }
 //   );
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [show, setShow] = React.useState(false);
-  const handleClick = () => setShow(!show);
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const handleClickHidePass = () => setShow(!show);
+  const handleClickLogin = async () => {
+    if(loading) return;
+    try {
+      setLoading(true);
+      setError("");
+      const response = await login(email, password);
+      if (response) {
+        const { enterprise, refresh_token, access_token } = response;
+        dispatch(setLoginSession({ enterprise, refreshToken: refresh_token, token: access_token }));
+      }
+
+      setLoading(false);
+
+      navigate(location.state?.previousUrl || "/admin/dashboard");
+    } catch (error: any) {
+      setLoading(false);
+
+      if(error.response.status === 404)
+        setError("Empresa no encontrada");
+      else if(error.response.status === 401)
+        setError("Password incorrecta");
+      else
+        setError("Error al iniciar sesión");
+    }
+  }
   return (
     <AuthDefaultLayout illustrationBackground={illustration}>
       <Flex
         maxW={{ base: "100%", md: "max-content" }}
         w="100%"
-        mx={{ base: "auto", lg: "0px" }}
+        mx={{ base:   "auto", lg: "0px" }}
         me="auto"
         h="100%"
         alignItems="start"
@@ -119,6 +155,7 @@ function Login(props: LoginProps) {
               Email o usuario<Text color={brandStars}>*</Text>
             </FormLabel>
             <Input
+              id="username"
               isRequired={true}
               variant="auth"
               fontSize="sm"
@@ -128,6 +165,7 @@ function Login(props: LoginProps) {
               mb="24px"
               fontWeight="500"
               size="lg"
+              onChange={(e) => setEmail(e.target.value)}
             />
             <FormLabel
               ms="4px"
@@ -140,6 +178,7 @@ function Login(props: LoginProps) {
             </FormLabel>
             <InputGroup size="md">
               <Input
+                id="password"
                 isRequired={true}
                 fontSize="sm"
                 placeholder="Min. 8 caracteres"
@@ -147,13 +186,14 @@ function Login(props: LoginProps) {
                 size="lg"
                 type={show ? "text" : "password"}
                 variant="auth"
+                onChange={(e) => setPassword(e.target.value)}
               />
               <InputRightElement display="flex" alignItems="center" mt="4px">
                 <Icon
                   color={textColorSecondary}
                   _hover={{ cursor: "pointer" }}
                   as={show ? FaEyeSlash : FaEye}
-                  onClick={handleClick}
+                  onClick={handleClickHidePass}
                 />
               </InputRightElement>
             </InputGroup>
@@ -192,8 +232,10 @@ function Login(props: LoginProps) {
               w="100%"
               h="50"
               mb="24px"
+              disabled={email === "" || password === ""}
+              onClick={handleClickLogin}
             >
-              Iniciar Sesión
+              {loading ? (<Spinner size={'sm'} />) : "Iniciar sesión"}
             </Button>
           </FormControl>
           <Flex
@@ -216,6 +258,11 @@ function Login(props: LoginProps) {
                 </Text>
               </NavLink>
             </Text> */}
+          </Flex>
+          <Flex>
+            <Text color="red.500" fontSize="sm" fontWeight="500">
+              {error}
+            </Text>
           </Flex>
         </Flex>
       </Flex>
