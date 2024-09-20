@@ -16,12 +16,15 @@ function AdminLayout(props: any) {
   const [fixed] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
 
-  const [brandText, setBrandText] = useState("Default Brand Text"); 
-  const isLoggedIn = useSelector((state: IRootState) => state.auth.isLoggedIn, shallowEqual);
+  const [brandText, setBrandText] = useState("Default Brand Text");
+  const isLoggedIn = useSelector(
+    (state: IRootState) => state.auth.isLoggedIn,
+    shallowEqual
+  );
 
   useEffect(() => {
     if (!isLoggedIn) {
-      navigate('/auth/login', { state: { previousUrl: location.pathname } });
+      navigate("/auth/login", { state: { previousUrl: location.pathname } });
     }
   }, [isLoggedIn, location.pathname, navigate]);
 
@@ -30,18 +33,23 @@ function AdminLayout(props: any) {
       let activeRoute = "";
       for (let i = 0; i < routes.length; i++) {
         if (routes[i].collapse) {
-          let collapseActiveRoute: string = getActiveRoute(routes[i].items ?? []);
+          let collapseActiveRoute: string = getActiveRoute(
+            routes[i].items ?? []
+          );
           if (collapseActiveRoute !== activeRoute) {
             return collapseActiveRoute;
           }
         } else if (routes[i].category) {
-          let categoryActiveRoute: string = getActiveRoute(routes[i].items ?? []);
+          let categoryActiveRoute: string = getActiveRoute(
+            routes[i].items ?? []
+          );
           if (categoryActiveRoute !== activeRoute) {
             return categoryActiveRoute;
           }
         } else {
           if (
-            window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
+            window.location.href.indexOf(routes[i].layout + routes[i].path) !==
+            -1
           ) {
             return routes[i].name;
           }
@@ -54,9 +62,8 @@ function AdminLayout(props: any) {
 
   const { onOpen } = useDisclosure();
   const adminRoutes = routes.filter((route) => route.layout === "/admin");
-  return (
-    isLoggedIn ? (
-      <Box>
+  return isLoggedIn ? (
+    <Box>
       <Box>
         <SidebarContext.Provider
           value={{
@@ -95,7 +102,7 @@ function AdminLayout(props: any) {
               p={{ base: "20px", md: "30px" }}
               pe="20px"
               minH="100vh"
-              pt="50px"
+              pt={{ base: "170px", md: "100px" }}
             >
               <Outlet />
             </Box>
@@ -104,8 +111,7 @@ function AdminLayout(props: any) {
         </SidebarContext.Provider>
       </Box>
     </Box>
-    ) : null
-  );
+  ) : null;
 }
 
 export default AdminLayout;
