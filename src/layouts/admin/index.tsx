@@ -17,7 +17,7 @@ function AdminLayout(props: any) {
 
   useEffect(() => {
     const getActiveRoute = (routes: IRoute[]) => {
-      let activeRoute = "Default Brand Text";
+      let activeRoute = "";
       for (let i = 0; i < routes.length; i++) {
         if (routes[i].collapse) {
           let collapseActiveRoute: string = getActiveRoute(routes[i].items ?? []);
@@ -42,6 +42,8 @@ function AdminLayout(props: any) {
     setBrandText(getActiveRoute(routes));
   }, [location]);
   const { onOpen } = useDisclosure();
+  const adminRoutes = routes.filter((route) => route.layout === "/admin");
+  console.log(adminRoutes);
   return (
     <Box>
       <Box>
@@ -51,7 +53,7 @@ function AdminLayout(props: any) {
             setToggleSidebar,
           }}
         >
-          <Sidebar routes={routes} />
+          <Sidebar routes={adminRoutes} />
           <Box
             float="right"
             minHeight="100vh"
