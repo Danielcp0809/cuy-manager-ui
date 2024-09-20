@@ -14,8 +14,9 @@ import SearchBar from "./searchBar/SearchBar";
 import { MdNotificationsNone } from "react-icons/md";
 import { SidebarResponsive } from "../sidebar/Sidebar";
 import routes from "../../core/routes/routes";
-import { useDispatch } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setLogoutSession } from "../../core/store/slices/authSlice";
+import { IRootState } from "../../core/store/reducers/rootReducer";
 
 interface NavbarAdminIslandProps {
   secondary?: boolean;
@@ -45,6 +46,7 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
   const handleClickLogOut = () => {
     dispatch(setLogoutSession());
   };
+  const enterprise = useSelector((state: IRootState) => state.auth.enterprise, shallowEqual);
   return (
     <Flex
       w={{ sm: "100%", md: "auto" }}
@@ -126,7 +128,7 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
           <Avatar
             _hover={{ cursor: "pointer" }}
             color="white"
-            name="Adela Parkson"
+            name={enterprise?.name}
             bg="#11047A"
             size="sm"
             w="40px"
@@ -153,7 +155,7 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
               fontWeight="700"
               color={textColor}
             >
-              👋&nbsp; Hey, Adela
+              {enterprise?.name}
             </Text>
           </Flex>
           <Flex flexDirection="column" p="10px">
@@ -163,15 +165,7 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
               borderRadius="8px"
               px="14px"
             >
-              <Text fontSize="sm">Profile Settings</Text>
-            </MenuItem>
-            <MenuItem
-              _hover={{ bg: "none" }}
-              _focus={{ bg: "none" }}
-              borderRadius="8px"
-              px="14px"
-            >
-              <Text fontSize="sm">Newsletter Settings</Text>
+              <Text fontSize="sm">Configuración de perfil</Text>
             </MenuItem>
             <MenuItem
               _hover={{ bg: "none" }}
@@ -181,7 +175,7 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
               px="14px"
               onClick={handleClickLogOut}
             >
-              <Text fontSize="sm">Log out</Text>
+              <Text fontSize="sm">Cerrar sesión</Text>
             </MenuItem>
           </Flex>
         </MenuList>
