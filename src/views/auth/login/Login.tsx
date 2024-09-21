@@ -226,6 +226,7 @@ function Login(props: LoginProps) {
               </NavLink>
             </Flex>
             <Button
+              isLoading={false}
               fontSize="sm"
               variant="brand"
               fontWeight="500"
@@ -235,7 +236,7 @@ function Login(props: LoginProps) {
               disabled={email === "" || password === ""}
               onClick={handleClickLogin}
             >
-              {loading ? (<Spinner size={'sm'} />) : "Iniciar sesión"}
+              Iniciar session
             </Button>
           </FormControl>
           <Flex
