@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import RegularTable from "../../../components/table/Table";
 import { cageColumns } from "./configurations/table.config";

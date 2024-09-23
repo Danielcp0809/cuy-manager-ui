@@ -101,9 +101,9 @@ function Header(props: HeaderProps) {
               onClick={handleClickSave}
               isDisabled={!validateForm()}
             >
-              Save
+              Guardar
             </Button>
-            <Button onClick={closeForm}>Cancel</Button>
+            <Button onClick={closeForm}>Cancelar</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
