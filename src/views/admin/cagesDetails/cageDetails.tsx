@@ -1,7 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useAuthApi from "../../../core/hooks/useAuthApi";
-import { Box, Text, Spinner } from "@chakra-ui/react";
+import { Text, Spinner, Stack, Flex } from "@chakra-ui/react";
+import CageInformation from "./components/CageInformation";
+import CageCounters from "./components/CageCounters";
 
 const CageDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -10,35 +13,54 @@ const CageDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCageDetails = async () => {
+    if (!id) return;
+    let isMounted = true;
+    setLoading(true);
+    const controller = new AbortController();
+    const getData = async () => {
       try {
-        const response = await authApi.get(`/cages/${id}`);
-        setCageDetails(response.data);
+        const response = await getDataCallback(id, controller);
+        isMounted && setCageDetails(response.data);
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching cage details:", error);
-      } finally {
         setLoading(false);
       }
     };
+    getData();
 
-    fetchCageDetails();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [id, authApi]);
 
-  if (loading) {
-    return <Spinner />;
+  const getDataCallback = async (id: string, controller: AbortController) => {
+    return await authApi.get(`/cages/${id}`, {
+      signal: controller.signal,
+    });
+  };
+  
+  if (!cageDetails && !loading) {
+    return (
+      <Flex justifyContent="center" alignItems="center" height="100%">
+        <Text>No se encontraron detalles para de la jaula</Text>
+      </Flex>
+    );  
   }
-
-  if (!cageDetails) {
-    return <Text>No se encontraron detalles para la jaula con código {id}</Text>;
+  
+  if (loading) {
+    return (
+      <Flex justifyContent="center" alignItems="center" height="100%" minH="150px">
+        <Spinner size="xl" thickness="5px" color="brand.500"/>
+      </Flex>
+    );
   }
 
   return (
-    <Box>
-      <Text fontSize="2xl" fontWeight="bold">Detalles de la Jaula</Text>
-      <Text>Código: {cageDetails.code}</Text>
-      <Text>Capacidad: {cageDetails.capacity}</Text>
-      {/* Agrega más detalles según sea necesario */}
-    </Box>
+    <Stack spacing={4}>
+      <CageInformation cage={cageDetails} />
+      <CageCounters cage={cageDetails} />
+    </Stack>
   );
 };
 

@@ -61,9 +61,7 @@ function Cages(props: cageProps) {
 
   return (
     <Box display="flex" flexDir="column" rowGap={5}>
-      <Box>
-        <Header onRefresh={onRefresh} selectedCage={selectedCage} setSelectedCage={setSelectedCage}/>
-      </Box>
+      <Header onRefresh={onRefresh} selectedCage={selectedCage} setSelectedCage={setSelectedCage}/>
       <RegularTable 
         columnsData={columnsData} 
         tableData={tableData} 
