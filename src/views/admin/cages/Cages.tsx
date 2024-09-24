@@ -5,6 +5,7 @@ import { cageColumns } from "./configurations/table.config";
 import useAuthApi from "../../../core/hooks/useAuthApi";
 import { Box } from "@chakra-ui/react";
 import Header from "./components/Header";
+import { ICage } from "../../../interfaces/api/cages.interface";
 
 interface cageProps {}
 
@@ -13,6 +14,7 @@ const columnsData = cageColumns;
 function Cages(props: cageProps) {
   const authApi = useAuthApi();
   const [tableData, setTableData] = useState([]);
+  const [selectedCage, setSelectedCage] = useState<ICage | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -49,12 +51,25 @@ function Cages(props: cageProps) {
     }
   };
 
+  const onEditRow = (data: ICage) => {
+    setSelectedCage(data);
+  }
+
+  const onDeleteRow = (data: ICage) => {
+    console.log("Delete", data);
+  }
+
   return (
     <Box display="flex" flexDir="column" rowGap={5}>
       <Box>
-        <Header onRefresh={onRefresh} />
+        <Header onRefresh={onRefresh} selectedCage={selectedCage} setSelectedCage={setSelectedCage}/>
       </Box>
-      <RegularTable columnsData={columnsData} tableData={tableData} />
+      <RegularTable 
+        columnsData={columnsData} 
+        tableData={tableData} 
+        onEditRow={onEditRow} 
+        onDeleteRow={onDeleteRow}
+      />
     </Box>
   );
 }
