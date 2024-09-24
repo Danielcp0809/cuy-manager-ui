@@ -24,9 +24,9 @@ import {
   useTable,
 } from "react-table";
 import Card from "../card/Card";
-import moment from "moment";
 import { ITableColumn } from "../../interfaces/table-columns.interface";
 import { MdDeleteForever, MdEdit } from "react-icons/md";
+import { getFormattedDate } from "../../shared/utils";
 
 interface TableProps {
   columnsData: ITableColumn[];
@@ -62,6 +62,7 @@ function RegularTable(props: TableProps) {
     const column = columns.find((column) => column.accessor === id);
     return column?.config?.isSticky;
   }
+
 
   return (
     <Card
@@ -142,7 +143,7 @@ function RegularTable(props: TableProps) {
                   } else if (cell.column.type === "DATE") {
                     data = (
                       <Text color={textColor} fontSize="sm" fontWeight="700">
-                        {moment(cell.value).format("DD/MM/YYYY HH:mm")}
+                        {getFormattedDate(cell.value)}
                       </Text>
                     );
                   } else if (cell.column.type === "PROGRESS") {
