@@ -2,6 +2,7 @@ import {
   Box,
   Flex,
   IconButton,
+  Link,
   Progress,
   Table,
   Tbody,
@@ -173,6 +174,19 @@ function RegularTable(props: TableProps) {
                           : cell.value}
                       </Text>
                     );
+                  } else if (cell.column.type === "LINK") {
+                    const getDataCallback = cell.column.callbacks?.getData;
+                    const href = getDataCallback ? getDataCallback(cell.row.original) : cell.value;
+                    data = ( 
+                      <Link
+                        color="brand.500"
+                        fontSize="sm"
+                        fontWeight="700"
+                        href={href}
+                      >
+                        {cell.value}
+                      </Link>
+                     )
                   }
                   return (
                     <Td

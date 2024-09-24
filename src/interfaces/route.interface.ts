@@ -2,9 +2,10 @@ export interface IRoute {
     name: string;
     layout: string,
     path: string,
-    icon: any,
+    icon?: any,
     component: any,
     collapse?: boolean,
     category?: boolean,
-    items?: IRoute[]
+    items?: IRoute[],
+    hidden?: boolean,
 }

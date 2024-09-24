@@ -26,6 +26,7 @@ function Links(props: LinksProps) {
   // this function creates the links from the secondary accordions (for example auth -> sign-in -> default)
   const createLinks: any = (routes: IRoute[]) => {
     return routes.map((route: IRoute, index: number) => {
+      if(route.hidden) return null;
       if (route.category) {
         return (
           <>
