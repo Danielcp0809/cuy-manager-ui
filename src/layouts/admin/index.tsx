@@ -47,10 +47,10 @@ function AdminLayout(props: any) {
             return categoryActiveRoute;
           }
         } else {
-          if (
-            window.location.href.indexOf(routes[i].layout + routes[i].path) !==
-            -1
-          ) {
+          const routePath = routes[i].layout + routes[i].path;
+          const currentPath = window.location.pathname;
+          const match = new RegExp(`^${routePath.replace(/:\w+/g, "[\\w-%]+")}$`).test(currentPath);
+          if (match) {
             return routes[i].name;
           }
         }
