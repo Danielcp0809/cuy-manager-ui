@@ -7,6 +7,7 @@ import Cages from "../../views/admin/cages/Cages";
 import Categories from "../../views/admin/categories/Categories";
 import Dashboard from "../../views/admin/dashboard/Dashboard";
 import Login from "../../views/auth/login/Login";
+import CageDetails from "../../views/admin/cagesDetails/cageDetails";
 
 const routes: IRoute[] = [
     {
@@ -29,6 +30,13 @@ const routes: IRoute[] = [
         path: "/jaulas",
         icon: <Icon as={GiCage}/>,
         component: <Cages />,
+    },
+    {
+        name: "Detalles",
+        layout: "/admin",
+        path: "/jaulas/:id",
+        hidden: true,
+        component: <CageDetails />,
     },
     {
         name: "Categorias",
