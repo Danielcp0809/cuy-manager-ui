@@ -7,7 +7,7 @@ import Cages from "../../views/admin/cages/Cages";
 import Categories from "../../views/admin/categories/Categories";
 import Dashboard from "../../views/admin/dashboard/Dashboard";
 import Login from "../../views/auth/login/Login";
-import CageDetails from "../../views/admin/cagesDetails/cageDetails";
+import CageDetails from "../../views/admin/cagesDetails/CageDetails";
 
 const routes: IRoute[] = [
     {
