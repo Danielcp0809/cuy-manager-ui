@@ -5,6 +5,9 @@ export const cageColumns: ITableColumn[] = [
         header: "Código",
         accessor: "code",
         type: "TEXT",
+        config: {
+            isSticky: true,
+        }
     },
     {
         header: "Capacidad",

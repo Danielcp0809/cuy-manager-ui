@@ -1,0 +1,7 @@
+.sticky-column {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 1;
+    box-shadow: 2px 0 5px -2px gray;
+  }

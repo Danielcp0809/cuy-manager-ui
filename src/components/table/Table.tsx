@@ -1,5 +1,7 @@
 import {
+  Box,
   Flex,
+  IconButton,
   Progress,
   Table,
   Tbody,
@@ -7,11 +9,12 @@ import {
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
 // Custom components
-
+import './Table.css';
 import React, { useMemo } from "react";
 import {
   useGlobalFilter,
@@ -22,15 +25,18 @@ import {
 import Card from "../card/Card";
 import moment from "moment";
 import { ITableColumn } from "../../interfaces/table-columns.interface";
+import { MdDeleteForever, MdEdit } from "react-icons/md";
 
 interface TableProps {
   columnsData: ITableColumn[];
   tableData: any;
   title?: string;
+  onEditRow?: (data: any) => void;
+  onDeleteRow?: (data: any) => void;
 }
 
 function RegularTable(props: TableProps) {
-  const { columnsData, tableData, title } = props;
+  const { columnsData, tableData, title, onEditRow, onDeleteRow } = props;
 
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
@@ -50,6 +56,12 @@ function RegularTable(props: TableProps) {
 
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
+
+  const isRowSticky = (id: string) => {
+    const column = columns.find((column) => column.accessor === id);
+    return column?.config?.isSticky;
+  }
+
   return (
     <Card
       direction="column"
@@ -79,6 +91,7 @@ function RegularTable(props: TableProps) {
                   pe="10px"
                   key={index}
                   borderColor={borderColor}
+                  className={isRowSticky(column.id) ? "sticky-column" : ""}
                 >
                   <Flex
                     justify="space-between"
@@ -90,6 +103,22 @@ function RegularTable(props: TableProps) {
                   </Flex>
                 </Th>
               ))}
+              {(onEditRow || onDeleteRow) ? (
+                <Th
+                  pe="10px"
+                  key={index}
+                  borderColor={borderColor}
+                >
+                  <Flex
+                    justify="space-between"
+                    align="center"
+                    fontSize={{ sm: "10px", lg: "12px" }}
+                    color="gray.400"
+                  >
+                    Acciones
+                  </Flex>
+                </Th>
+              ) : null}
             </Tr>
           ))}
         </Thead>
@@ -139,7 +168,9 @@ function RegularTable(props: TableProps) {
                     const getData = cell.column.callbacks?.getData;
                     data = (
                       <Text color={textColor} fontSize="sm" fontWeight="700">
-                        {getData ? getData(cell.value, cell.row.original) : cell.value}
+                        {getData
+                          ? getData(cell.value, cell.row.original)
+                          : cell.value}
                       </Text>
                     );
                   }
@@ -150,11 +181,44 @@ function RegularTable(props: TableProps) {
                       fontSize={{ sm: "14px" }}
                       minW={{ sm: "150px", md: "200px", lg: "auto" }}
                       borderColor="transparent"
+                      className={isRowSticky(cell.column.id) ? "sticky-column" : ""}
                     >
                       {data}
                     </Td>
                   );
                 })}
+                {(props.onEditRow || props.onDeleteRow) ? (
+                  <Td
+                    fontSize={{ sm: "14px" }}
+                    minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                    borderColor="transparent"
+                  >
+                    <Box>
+                      {onEditRow && (
+                        <Tooltip label="Editar">
+                          <IconButton
+                            aria-label="Edit"
+                            icon={<MdEdit />}
+                            size="sm"
+                            mr="10px"
+                            onClick={() => onEditRow && onEditRow(row.original)}
+                          />
+                        </Tooltip>
+                      )}
+                      {onDeleteRow && (
+                        <Tooltip label="Eliminar">
+                          <IconButton
+                            aria-label="Delete"
+                            icon={<MdDeleteForever />}
+                            colorScheme="red"
+                            size="sm"
+                            onClick={() => onDeleteRow && onDeleteRow(row.original)}
+                          />
+                        </Tooltip>
+                      )}
+                    </Box>
+                  </Td>
+                ): null}
               </Tr>
             );
           })}
