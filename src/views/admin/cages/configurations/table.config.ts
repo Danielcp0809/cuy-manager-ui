@@ -4,7 +4,12 @@ export const cageColumns: ITableColumn[] = [
     {
         header: "Código",
         accessor: "code",
-        type: "TEXT",
+        type: "LINK",
+        callbacks: {
+            getData: (data: any) => {
+                return `/admin/jaulas/${data.id}`
+            }
+        },
         config: {
             isSticky: true,
         }
