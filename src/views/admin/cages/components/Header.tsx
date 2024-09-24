@@ -1,5 +1,6 @@
 import { AddIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
   FormControl,
   FormLabel,
@@ -37,7 +38,7 @@ function Header(props: HeaderProps) {
 
   useEffect(() => {
     if (selectedCage) {
-      setForm({code: selectedCage.code, capacity: selectedCage.capacity});
+      setForm({ code: selectedCage.code, capacity: selectedCage.capacity });
       onOpen();
     }
   }, [selectedCage, onOpen]);
@@ -63,7 +64,9 @@ function Header(props: HeaderProps) {
       showNotification(
         selectedCage ? "Jaula actualizada" : "Jaula creada",
         "success",
-        `La jaula ha sido ${selectedCage ? 'actualizada': 'creada'} correctamente`,
+        `La jaula ha sido ${
+          selectedCage ? "actualizada" : "creada"
+        } correctamente`
       );
     } catch (error: any) {
       setLoading(false);
@@ -78,7 +81,9 @@ function Header(props: HeaderProps) {
       showNotification(
         "Error",
         "error",
-        `Ha ocurrido un error al ${selectedCage ? 'actualizar' : 'crear'} la jaula`
+        `Ha ocurrido un error al ${
+          selectedCage ? "actualizar" : "crear"
+        } la jaula`
       );
       console.error(error);
     }
@@ -97,8 +102,7 @@ function Header(props: HeaderProps) {
   };
 
   return (
-    <>
-      {}
+    <Box>
       <IconButton
         colorScheme="brand"
         aria-label="Crear nueva jaula"
@@ -107,11 +111,12 @@ function Header(props: HeaderProps) {
         icon={<AddIcon />}
         onClick={onOpen}
       />
-
       <Modal finalFocusRef={initialRef} isOpen={isOpen} onClose={closeForm}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{selectedCage ? 'Actualizar' : 'Crear'} una jaula</ModalHeader>
+          <ModalHeader>
+            {selectedCage ? "Actualizar" : "Crear"} una jaula
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
@@ -149,7 +154,7 @@ function Header(props: HeaderProps) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Box>
   );
 }
 
