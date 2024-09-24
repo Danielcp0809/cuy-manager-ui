@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '../shared/constants';
-import { IAuthResponse } from '../interfaces/auth-enterprise.interface';
+import { IAuthResponse } from '../interfaces/api/auth-enterprise.interface';
 
 export const api = axios.create({
     baseURL: API_URL,
