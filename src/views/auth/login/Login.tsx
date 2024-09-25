@@ -11,7 +11,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Spinner,
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
