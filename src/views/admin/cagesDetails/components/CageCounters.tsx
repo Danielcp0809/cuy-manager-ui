@@ -26,6 +26,7 @@ function CageCounters(props: CageCountersProps) {
         columnsData={countersColumns}
         tableData={cage.counters}
         title="CONTADORES"
+        noDataText="No se encontraron contadores"
       />
     </Stack>
   );

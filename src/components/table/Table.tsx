@@ -32,12 +32,13 @@ interface TableProps {
   columnsData: ITableColumn[];
   tableData: any;
   title?: string;
+  noDataText?: string;
   onEditRow?: (data: any) => void;
   onDeleteRow?: (data: any) => void;
 }
 
 function RegularTable(props: TableProps) {
-  const { columnsData, tableData, title, onEditRow, onDeleteRow } = props;
+  const { columnsData, tableData, title, onEditRow, onDeleteRow, noDataText} = props;
 
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
@@ -134,7 +135,7 @@ function RegularTable(props: TableProps) {
                   border="none"
                 >
                   <Text color={textColor} fontSize="sm" fontWeight="700">
-                    No hay datos disponibles
+                    {noDataText || "No hay datos para mostrar"}
                   </Text>
                 </Td>
               </Tr>
