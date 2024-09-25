@@ -26,6 +26,11 @@ interface HeaderProps {
   onRefresh: () => void;
 }
 
+const initialFormState = { 
+  code: "", 
+  capacity: 0 
+}
+
 function Header(props: HeaderProps) {
   const { onRefresh, selectedCage, setSelectedCage } = props;
   const initialRef = React.useRef<HTMLInputElement>(null);
@@ -34,7 +39,7 @@ function Header(props: HeaderProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = React.useState(false);
   const [formChanged, setFormChanged] = React.useState(false);
-  const [form, setForm] = React.useState({ code: "", capacity: 0 });
+  const [form, setForm] = React.useState(initialFormState);
 
   useEffect(() => {
     if (selectedCage) {
@@ -44,7 +49,7 @@ function Header(props: HeaderProps) {
   }, [selectedCage, onOpen]);
 
   const closeForm = () => {
-    setForm({ code: "", capacity: 0 });
+    setForm(initialFormState);
     setSelectedCage(null);
     setFormChanged(false);
     onClose();

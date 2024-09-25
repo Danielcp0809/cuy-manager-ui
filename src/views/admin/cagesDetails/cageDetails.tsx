@@ -41,6 +41,24 @@ const CageDetails = () => {
       signal: controller.signal,
     });
   };
+
+  const onRefresh = async () => {
+    if (!id) return;
+    const controller = new AbortController();
+    setLoading(true);
+    try {
+      const response = await getDataCallback(id, controller);
+      setLoading(false);
+      setCageDetails(response.data);
+    } catch (error) {
+      setLoading(false);
+      showNotification(
+        "Error",
+        "error",
+        "Ocurrió un error al obtener los detalles de la jaula"
+      );
+    }
+  }
   
   if (loading) {
     return (
@@ -61,7 +79,7 @@ const CageDetails = () => {
   return (
     <Stack spacing={4}>
       <CageInformation cage={cageDetails} />
-      <CageCounters cage={cageDetails} />
+      <CageCounters onRefresh={onRefresh} cage={cageDetails} />
     </Stack>
   );
 };
