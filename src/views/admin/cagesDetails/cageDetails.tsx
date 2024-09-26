@@ -1,13 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAuthApi from "../../../core/hooks/useAuthApi";
-import { Text, Spinner, Stack, Flex } from "@chakra-ui/react";
+import { Text, Spinner, Stack, Flex, Button, Box } from "@chakra-ui/react";
 import CageInformation from "./components/CageInformation";
 import CageCounters from "./components/CageCounters";
 import useCustomToast from "../../../core/hooks/useToastNotification";
+import { IoIosArrowBack } from "react-icons/io";
 
 const CageDetails = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const authApi = useAuthApi();
   const showNotification = useCustomToast();
@@ -24,8 +26,12 @@ const CageDetails = () => {
         setCageDetails(response.data);
         setLoading(false);
       } catch (error: any) {
-        if(error.code === "ERR_CANCELED") return
-        showNotification("Error", "error", "Ocurrió un error al obtener los detalles de la jaula");
+        if (error.code === "ERR_CANCELED") return;
+        showNotification(
+          "Error",
+          "error",
+          "Ocurrió un error al obtener los detalles de la jaula"
+        );
         setLoading(false);
       }
     };
@@ -58,12 +64,21 @@ const CageDetails = () => {
         "Ocurrió un error al obtener los detalles de la jaula"
       );
     }
-  }
-  
+  };
+
+  const goBack = () => {
+    navigate("/admin/jaulas");
+  };
+
   if (loading) {
     return (
-      <Flex justifyContent="center" alignItems="center" height="100%" minH="150px">
-        <Spinner size="xl" thickness="5px" color="brand.500"/>
+      <Flex
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+        minH="150px"
+      >
+        <Spinner size="xl" thickness="5px" color="brand.500" />
       </Flex>
     );
   }
@@ -73,11 +88,20 @@ const CageDetails = () => {
       <Flex justifyContent="center" alignItems="center" height="100%">
         <Text>No se encontraron detalles para de la jaula</Text>
       </Flex>
-    );  
+    );
   }
 
   return (
     <Stack spacing={4}>
+      <Box>
+        <Button
+          leftIcon={<IoIosArrowBack />}
+          variant="ghost"
+          onClick={goBack}
+        >
+          Regresar
+        </Button>
+      </Box>
       <CageInformation cage={cageDetails} />
       <CageCounters onRefresh={onRefresh} cage={cageDetails} />
     </Stack>
