@@ -1,6 +1,6 @@
 import React from "react";
 import { ICage } from "../../../../interfaces/api/cages.interface";
-import { Text, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
+import { Text, SimpleGrid, useColorModeValue, Flex, Progress } from "@chakra-ui/react";
 import Information from "../../../../components/information/Information";
 import Card from "../../../../components/card/Card";
 import { getFormattedDate } from "../../../../shared/utils";
@@ -17,6 +17,7 @@ export default function CageInformation(props: cageInformationProps) {
     "0px 18px 40px rgba(112, 144, 176, 0.12)",
     "unset"
   );
+  const textColor = useColorModeValue("secondaryGray.900", "white");
 
   const getTotals = () => {
     return cage.counters.reduce(
@@ -26,7 +27,7 @@ export default function CageInformation(props: cageInformationProps) {
   }
 
   const getPercentage = () => {
-    return ((getTotals() / cage.capacity) * 100).toFixed(1) + "%";
+    return ((getTotals() / cage.capacity) * 100).toFixed(0)
   }
 
   return (
@@ -53,8 +54,24 @@ export default function CageInformation(props: cageInformationProps) {
         />
         <Information
           boxShadow={cardShadow}
-          title="Uso"
-          value={getPercentage()}
+          title="Porcentaje de uso"
+          value={
+            <Flex align="center">
+            <Text
+              me="10px"
+              color={textColor}
+            >
+              {getPercentage()}%
+            </Text>
+            <Progress
+              variant="table"
+              colorScheme="brandScheme"
+              h="8px"
+              w="100%"
+              value={Number(getPercentage())}
+            />
+          </Flex>
+          }
         />
         <Information
           boxShadow={cardShadow}
