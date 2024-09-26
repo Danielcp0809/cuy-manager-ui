@@ -3,10 +3,11 @@ import React, { useEffect, useState } from "react";
 import RegularTable from "../../../components/table/Table";
 import { cageColumns } from "./configurations/table.config";
 import useAuthApi from "../../../core/hooks/useAuthApi";
-import { Box, Flex, Spinner } from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import Header from "./components/Header";
 import { ICage } from "../../../interfaces/api/cages.interface";
 import useCustomToast from "../../../core/hooks/useToastNotification";
+import ConfirmationDialog from "../../../components/confirmationDialog/ConfirmationDialog";
 
 interface cageProps {}
 
@@ -17,7 +18,10 @@ function Cages(props: cageProps) {
   const showNotification = useCustomToast();
   const [tableData, setTableData] = useState([]);
   const [selectedCage, setSelectedCage] = useState<ICage | null>(null);
+  const [cageToDelete, setCageToDelete] = useState<ICage | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     let isMounted = true;
@@ -63,7 +67,25 @@ function Cages(props: cageProps) {
   }
 
   const onDeleteRow = (data: ICage) => {
-    console.log("Delete", data);
+    setCageToDelete(data);
+    onOpen();
+  }
+
+  const onCloseDialog = () => {
+    onClose();
+    setCageToDelete(null);
+  }
+
+  const onConfirmDialog = async () => {
+    try {
+      await authApi.delete(`/cages/${cageToDelete?.id}`);
+      showNotification("Eliminación exitosa", "success", `La jaula ${cageToDelete?.code} ha sido eliminada`);
+      setTableData(tableData.filter((cage: ICage) => cage.id !== cageToDelete?.id));
+      onCloseDialog();
+    } catch (error: any) {
+      showNotification("Error", "error", "Ocurrió un error al eliminar la jaula");
+      console.error(error)
+    }
   }
 
   if (loading) {
@@ -77,12 +99,19 @@ function Cages(props: cageProps) {
   return (
     <Box display="flex" flexDir="column" rowGap={5}>
       <Header onRefresh={onRefresh} selectedCage={selectedCage} setSelectedCage={setSelectedCage}/>
-      <RegularTable 
+      <RegularTable
         columnsData={columnsData} 
         tableData={tableData} 
         onEditRow={onEditRow} 
         onDeleteRow={onDeleteRow}
         noDataText="No se encontraron jaulas"
+      />
+      <ConfirmationDialog
+        isOpen={isOpen}
+        onClose={onCloseDialog}
+        onConfirm={onConfirmDialog}
+        title="Elimina jaula"
+        message={`¿Estás seguro de eliminar la jaula ${cageToDelete?.code}?. Se eliminarán todos los contadores asociados.`}
       />
     </Box>
   );
