@@ -5,7 +5,7 @@ import Card from "../card/Card";
 
 interface InformationProps {
   title: string;
-  value: any;
+  value: string | React.ReactNode;
   [key: string]: any;
 }
 
@@ -18,12 +18,16 @@ export default function Information(props: InformationProps) {
   return (
     <Card bg={bg} {...rest} padding={{ sm: "10px", lg: "20px" }}>
       <Box>
-        <Text fontWeight='500' color={textColorSecondary} fontSize='sm'>
+        <Text fontWeight="500" color={textColorSecondary} fontSize="sm">
           {title}
         </Text>
-        <Text color={textColorPrimary} fontWeight='500' fontSize='md'>
-          {value}
-        </Text>
+        {typeof value === "string" ? (
+          <Text color={textColorPrimary} fontWeight="500" fontSize="md">
+            {value}
+          </Text>
+        ) : (
+          value
+        )}
       </Box>
     </Card>
   );

@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Flex,
   IconButton,
@@ -38,7 +39,8 @@ interface TableProps {
 }
 
 function RegularTable(props: TableProps) {
-  const { columnsData, tableData, title, onEditRow, onDeleteRow, noDataText} = props;
+  const { columnsData, tableData, title, onEditRow, onDeleteRow, noDataText } =
+    props;
 
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
@@ -72,12 +74,7 @@ function RegularTable(props: TableProps) {
       overflowX={{ sm: "scroll", lg: "hidden" }}
     >
       {title && (
-        <Flex
-          px="25px"
-          justify="space-between"
-          mb="10px"
-          align="center"
-        >
+        <Flex px="25px" justify="space-between" mb="10px" align="center">
           <Text
             color={textColor}
             fontSize="22px"
@@ -170,6 +167,10 @@ function RegularTable(props: TableProps) {
                           </Text>
                         );
                       } else if (cell.column.type === "PROGRESS") {
+                        const getData = cell.column.callbacks?.getData;
+                        const percentage = getData
+                          ? getData(cell.value, cell.row.original)
+                          : cell.value;
                         data = (
                           <Flex align="center">
                             <Text
@@ -178,14 +179,14 @@ function RegularTable(props: TableProps) {
                               fontSize="sm"
                               fontWeight="700"
                             >
-                              {cell.value}%
+                              {percentage}%
                             </Text>
                             <Progress
                               variant="table"
                               colorScheme="brandScheme"
                               h="8px"
-                              w="63px"
-                              value={cell.value}
+                              w="80px"
+                              value={percentage}
                             />
                           </Flex>
                         );
@@ -217,6 +218,38 @@ function RegularTable(props: TableProps) {
                             {cell.value}
                           </Link>
                         );
+                      } else if (cell.column.type === "STATUS") {
+                        const getData = cell.column.callbacks?.getData;
+                        const status = getData
+                          ? getData(cell.value, cell.row.original)
+                          : cell.value;
+                        const successLabel =
+                          cell.column.config?.successLabel ?? "Bueno";
+                        const dangerLabel =
+                          cell.column.config?.dangerLabel ?? "Regular";
+                        const warningLabel =
+                          cell.column.config?.warningLabel ?? "Malo";
+                        let color = "gray.500";
+                        let message = "No label";
+                        switch (status) {
+                          case "success":
+                            color = "green";
+                            message = successLabel;
+                            break;
+                          case "danger":
+                            color = "red";
+                            message = dangerLabel;
+                            break;
+                          case "warning":
+                            color = "yellow";
+                            message = warningLabel;
+                            break;
+                          default:
+                            color = "gray.500";
+                            message = "No label";
+                            break;
+                        }
+                        data = <Badge colorScheme={color}>{message}</Badge>;
                       }
                       return (
                         <Td
