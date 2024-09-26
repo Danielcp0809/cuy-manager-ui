@@ -19,6 +19,8 @@ import React, { useEffect } from "react";
 import useCustomToast from "../../../../core/hooks/useToastNotification";
 import useAuthApi from "../../../../core/hooks/useAuthApi";
 import { ICage } from "../../../../interfaces/api/cages.interface";
+import { IoMdAdd } from "react-icons/io";
+import { GoDash } from "react-icons/go";
 
 interface HeaderProps {
   selectedCage: ICage | null;
@@ -26,10 +28,10 @@ interface HeaderProps {
   onRefresh: () => void;
 }
 
-const initialFormState = { 
-  code: "", 
-  capacity: 0 
-}
+const initialFormState = {
+  code: "",
+  capacity: 0,
+};
 
 function Header(props: HeaderProps) {
   const { onRefresh, selectedCage, setSelectedCage } = props;
@@ -102,6 +104,13 @@ function Header(props: HeaderProps) {
     setForm({ ...form, [key]: value });
   };
 
+  const updateAmount = (action: 'increase' | 'decrease') => {
+    let capacity = action === 'increase' ? form.capacity + 1 : form.capacity - 1;
+    if(capacity < 0) capacity = 0;
+    setFormChanged(true); 
+    setForm({ ...form, capacity });
+  }
+
   const validateForm = () => {
     return form.code.trim() !== "" && form.capacity > 0 && formChanged;
   };
@@ -136,13 +145,27 @@ function Header(props: HeaderProps) {
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Capacidad</FormLabel>
-              <Input
-                data-key="capacity"
-                onChange={updateForm}
-                type="number"
-                value={form.capacity}
-                placeholder="Numero máximo de animales"
-              />
+              <Box display="flex" gap="5px">
+                <Input
+                  data-key="capacity"
+                  onChange={updateForm}
+                  type="number"
+                  value={form.capacity}
+                  placeholder="Numero máximo de animales"
+                />
+                <Box display="flex" alignItems="center" gap="5px">
+                  <IconButton
+                    aria-label="Aumentar contador"
+                    onClick={() => updateAmount("increase")}
+                    icon={<IoMdAdd />}
+                  />
+                  <IconButton
+                    aria-label="Reducir contador"
+                    onClick={() => updateAmount("decrease")}
+                    icon={<GoDash />}
+                  />
+                </Box>
+              </Box>
             </FormControl>
           </ModalBody>
           <ModalFooter>

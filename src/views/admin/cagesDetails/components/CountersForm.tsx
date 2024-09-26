@@ -2,9 +2,11 @@ import React, { useEffect } from "react";
 import { ICounter } from "../../../../interfaces/api/counters.interface";
 import useAuthApi from "../../../../core/hooks/useAuthApi";
 import {
+  Box,
   Button,
   FormControl,
   FormLabel,
+  IconButton,
   Input,
   Modal,
   ModalBody,
@@ -18,6 +20,8 @@ import {
 import useCustomToast from "../../../../core/hooks/useToastNotification";
 import { ICategory } from "../../../../interfaces/api/category.interface";
 import { ICage } from "../../../../interfaces/api/cages.interface";
+import { IoMdAdd } from "react-icons/io";
+import { GoDash } from "react-icons/go";
 
 interface CountersFormProps {
   cage: ICage;
@@ -78,13 +82,23 @@ function CountersForm(props: CountersFormProps) {
     return form.category_id !== "" && form.amount > 0 && formChanged;
   };
 
+  const updateAmount = (action: "increase" | "decrease") => {
+    let amount = action === "increase" ? form.amount + 1 : form.amount - 1;
+    if (amount < 0) amount = 0;
+    setFormChanged(true);
+    setForm({ ...form, amount });
+  };
+
   const handleClickSave = async () => {
     try {
       setLoading(true);
       if (selectedCounter) {
-        await authApi.put(`/counters/${selectedCounter.id}`, {...form, cage_id: cage.id});
+        await authApi.put(`/counters/${selectedCounter.id}`, {
+          ...form,
+          cage_id: cage.id,
+        });
       } else {
-        await authApi.post("/counters", {...form, cage_id: cage.id});
+        await authApi.post("/counters", { ...form, cage_id: cage.id });
       }
       await onRefresh();
       setLoading(false);
@@ -140,7 +154,9 @@ function CountersForm(props: CountersFormProps) {
               disabled={!!selectedCounter}
               data-key="category_id"
               onChange={(event: any) => {
-                const category = categories.find(cat => cat.id === event.target.value);
+                const category = categories.find(
+                  (cat) => cat.id === event.target.value
+                );
                 setCategoryName(category ? category.name : "");
                 updateForm(event);
               }}
@@ -156,13 +172,27 @@ function CountersForm(props: CountersFormProps) {
           </FormControl>
           <FormControl mt={4}>
             <FormLabel>Cantidad</FormLabel>
-            <Input
-              data-key="amount"
-              type="number"
-              onChange={updateForm}
-              value={form.amount}
-              placeholder="Cantidad"
-            />
+            <Box display="flex" gap="5px">
+              <Input
+                data-key="amount"
+                type="number"
+                onChange={updateForm}
+                value={form.amount}
+                placeholder="Cantidad"
+              />
+              <Box display="flex" alignItems="center" gap="5px">
+                <IconButton
+                  aria-label="Aumentar contador"
+                  onClick={() => updateAmount("increase")}
+                  icon={<IoMdAdd />}
+                />
+                <IconButton
+                  aria-label="Reducir contador"
+                  onClick={() => updateAmount("decrease")}
+                  icon={<GoDash />}
+                />
+              </Box>
+            </Box>
           </FormControl>
         </ModalBody>
         <ModalFooter>
