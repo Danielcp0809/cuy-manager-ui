@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import RegularTable from "../../../components/table/Table";
 import { cageColumns } from "./configurations/table.config";
 import useAuthApi from "../../../core/hooks/useAuthApi";
-import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure, Text } from "@chakra-ui/react";
 import Header from "./components/Header";
 import { ICage } from "../../../interfaces/api/cages.interface";
 import useCustomToast from "../../../core/hooks/useToastNotification";
@@ -21,7 +21,7 @@ function Cages(props: cageProps) {
   const [cageToDelete, setCageToDelete] = useState<ICage | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     let isMounted = true;
@@ -32,10 +32,14 @@ function Cages(props: cageProps) {
         isMounted && setTableData(response.data);
         setLoading(false);
       } catch (error: any) {
-        if(error.code === "ERR_CANCELED") return
-        showNotification("Error", "error", "Ocurrió un error al obtener las jaulas");
+        if (error.code === "ERR_CANCELED") return;
+        showNotification(
+          "Error",
+          "error",
+          "Ocurrió un error al obtener las jaulas"
+        );
         setLoading(false);
-        console.error(error)
+        console.error(error);
       }
     };
     getData();
@@ -64,45 +68,64 @@ function Cages(props: cageProps) {
 
   const onEditRow = (data: ICage) => {
     setSelectedCage(data);
-  }
+  };
 
   const onDeleteRow = (data: ICage) => {
     setCageToDelete(data);
     onOpen();
-  }
+  };
 
   const onCloseDialog = () => {
     onClose();
     setCageToDelete(null);
-  }
+  };
 
   const onConfirmDialog = async () => {
     try {
       await authApi.delete(`/cages/${cageToDelete?.id}`);
-      showNotification("Eliminación exitosa", "success", `La jaula ${cageToDelete?.code} ha sido eliminada`);
-      setTableData(tableData.filter((cage: ICage) => cage.id !== cageToDelete?.id));
+      showNotification(
+        "Eliminación exitosa",
+        "success",
+        `La jaula ${cageToDelete?.code} ha sido eliminada`
+      );
+      setTableData(
+        tableData.filter((cage: ICage) => cage.id !== cageToDelete?.id)
+      );
       onCloseDialog();
     } catch (error: any) {
-      showNotification("Error", "error", "Ocurrió un error al eliminar la jaula");
-      console.error(error)
+      showNotification(
+        "Error",
+        "error",
+        "Ocurrió un error al eliminar la jaula"
+      );
+      console.error(error);
     }
-  }
+  };
 
   if (loading) {
     return (
-      <Flex justifyContent="center" alignItems="center" height="100%" minH="150px">
-        <Spinner size="xl" thickness="5px" color="brand.500"/>
+      <Flex
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+        minH="150px"
+      >
+        <Spinner size="xl" thickness="5px" color="brand.500" />
       </Flex>
     );
   }
 
   return (
     <Box display="flex" flexDir="column" rowGap={5}>
-      <Header onRefresh={onRefresh} selectedCage={selectedCage} setSelectedCage={setSelectedCage}/>
+      <Header
+        onRefresh={onRefresh}
+        selectedCage={selectedCage}
+        setSelectedCage={setSelectedCage}
+      />
       <RegularTable
-        columnsData={columnsData} 
-        tableData={tableData} 
-        onEditRow={onEditRow} 
+        columnsData={columnsData}
+        tableData={tableData}
+        onEditRow={onEditRow}
         onDeleteRow={onDeleteRow}
         noDataText="No se encontraron jaulas"
       />
@@ -111,7 +134,12 @@ function Cages(props: cageProps) {
         onClose={onCloseDialog}
         onConfirm={onConfirmDialog}
         title="Elimina jaula"
-        message={`¿Estás seguro de eliminar la jaula ${cageToDelete?.code}?. Se eliminarán todos los contadores asociados.`}
+        message={
+          <Text>
+            ¿Está seguro de que desea eliminar la jaula{" "}
+            <strong>{cageToDelete?.code}</strong> ? Se eliminarán todos los contadores asociados
+          </Text>
+        }
       />
     </Box>
   );
