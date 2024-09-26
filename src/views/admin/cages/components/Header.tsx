@@ -35,13 +35,13 @@ const initialFormState = {
 
 function Header(props: HeaderProps) {
   const { onRefresh, selectedCage, setSelectedCage } = props;
-  const initialRef = React.useRef<HTMLInputElement>(null);
-  const authApi = useAuthApi();
-  const showNotification = useCustomToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = React.useState(false);
   const [formChanged, setFormChanged] = React.useState(false);
   const [form, setForm] = React.useState(initialFormState);
+  const initialRef = React.useRef<HTMLInputElement>(null);
+  const authApi = useAuthApi();
+  const showNotification = useCustomToast();
 
   useEffect(() => {
     if (selectedCage) {
@@ -104,12 +104,13 @@ function Header(props: HeaderProps) {
     setForm({ ...form, [key]: value });
   };
 
-  const updateAmount = (action: 'increase' | 'decrease') => {
-    let capacity = action === 'increase' ? form.capacity + 1 : form.capacity - 1;
-    if(capacity < 0) capacity = 0;
-    setFormChanged(true); 
+  const updateAmount = (action: "increase" | "decrease") => {
+    let capacity =
+      action === "increase" ? form.capacity + 1 : form.capacity - 1;
+    if (capacity < 0) capacity = 0;
+    setFormChanged(true);
     setForm({ ...form, capacity });
-  }
+  };
 
   const validateForm = () => {
     return form.code.trim() !== "" && form.capacity > 0 && formChanged;
