@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import { categoryColumns } from "./configurations/table.config";
 import useAuthApi from "../../../core/hooks/useAuthApi";
 import useCustomToast from "../../../core/hooks/useToastNotification";
-import { Box, Flex, Spinner } from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import RegularTable from "../../../components/table/Table";
 import { ICategory } from "../../../interfaces/api/category.interface";
 import CategoriesHeader from "./components/Header";
+import { ICage } from "../../../interfaces/api/cages.interface";
+import ConfirmationDialog from "../../../components/confirmationDialog/ConfirmationDialog";
 
 interface categoriesProps {}
 
@@ -18,6 +20,8 @@ function Categories(props: categoriesProps) {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [categoryToDelete, setCategoryToDelete] = useState<ICategory | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -74,8 +78,27 @@ function Categories(props: categoriesProps) {
   }
 
   const onDeleteRow = (data: ICategory) => {
-    console.log("Delete", data);
+    setCategoryToDelete(data);
+    onOpen();
   }
+
+  const onCloseDialog = () => {
+    onClose();
+    setCategoryToDelete(null);
+  }
+
+  const onConfirmDialog = async () => {
+    try {
+      await authApi.delete(`/categories/${categoryToDelete?.id}`);
+      showNotification("Eliminación exitosa", "success", `La categoría ${categoryToDelete?.name} ha sido eliminada`);
+      setTableData(tableData.filter((cage: ICage) => cage.id !== categoryToDelete?.id));
+      onCloseDialog();
+    } catch (error: any) {
+      showNotification("Error", "error", "Ocurrió un error al eliminar la categoría");
+      console.error(error)
+    }
+  }
+
 
   if (loading) {
     return (
@@ -94,6 +117,13 @@ function Categories(props: categoriesProps) {
         onEditRow={onEditRow} 
         onDeleteRow={onDeleteRow}
         noDataText="No se encontraron jaulas"
+      />
+      <ConfirmationDialog
+        isOpen={isOpen}
+        onClose={onCloseDialog}
+        onConfirm={onConfirmDialog}
+        title="Elimina categoría"
+        message={`¿Estás seguro de eliminar la categoría ${categoryToDelete?.name}?. Se eliminarán todos los contadores asociados.`}
       />
     </Box>
   );
