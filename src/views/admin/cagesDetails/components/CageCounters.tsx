@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ICage } from "../../../../interfaces/api/cages.interface";
 import RegularTable from "../../../../components/table/Table";
 import { countersColumns } from "../configurations/counters-table.config";
-import { Box, IconButton, Stack, useDisclosure } from "@chakra-ui/react";
+import { Box, IconButton, Stack, useDisclosure, Text } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import useAuthApi from "../../../../core/hooks/useAuthApi";
 import useCustomToast from "../../../../core/hooks/useToastNotification";
 import { ICategory } from "../../../../interfaces/api/category.interface";
 import CountersForm from "./CountersForm";
 import { ICounter } from "../../../../interfaces/api/counters.interface";
+import ConfirmationDialog from "../../../../components/confirmationDialog/ConfirmationDialog";
 
 interface CageCountersProps {
   cage: ICage;
@@ -19,9 +20,15 @@ interface CageCountersProps {
 function CageCounters(props: CageCountersProps) {
   const authApi = useAuthApi();
   const showNotification = useCustomToast();
-  const [categories, setCategories] = React.useState<ICategory[]>([]);
-  const [selectedCounter, setSelectedCounter] = React.useState<ICounter | null>(null);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [selectedCounter, setSelectedCounter] = useState<ICounter | null>(null);
+  const [counterToDelete, setCounterToDelete] = useState<ICounter | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDialog,
+    onOpen: onOpenDialog,
+    onClose: onCloseDialog,
+  } = useDisclosure();
   const { cage, onRefresh } = props;
 
   useEffect(() => {
@@ -53,11 +60,32 @@ function CageCounters(props: CageCountersProps) {
 
   const onEditRow = (counter: ICounter) => {
     setSelectedCounter(counter);
-  }
+  };
 
   const onDeleteRow = async (counter: ICounter) => {
-    console.log("Delete counter", counter);
-  }
+    setCounterToDelete(counter);
+    onOpenDialog();
+  };
+
+  const onConfirmDialog = async () => {
+    try {
+      await authApi.delete(`/counters/${counterToDelete?.id}`);
+      showNotification(
+        "Eliminación exitosa",
+        "success",
+        "Contador eliminado correctamente"
+      );
+      onRefresh();
+      onCloseDialog();
+    } catch (error: any) {
+      showNotification(
+        "Error",
+        "error",
+        "Ocurrió un error al eliminar el contador"
+      );
+      console.error(error);
+    }
+  };
 
   return (
     <Stack spacing={4}>
@@ -88,6 +116,21 @@ function CageCounters(props: CageCountersProps) {
         noDataText="No se encontraron contadores"
         onEditRow={onEditRow}
         onDeleteRow={onDeleteRow}
+      />
+      <ConfirmationDialog
+        isOpen={isOpenDialog}
+        onClose={onCloseDialog}
+        onConfirm={onConfirmDialog}
+        title="Elimina jaula"
+        message={
+          <Text>
+            ¿Estás seguro de eliminar el contador de la categoría{" "}
+            <Text as="span" fontWeight="bold">
+              {counterToDelete?.category.name}
+            </Text>{" "}
+            de esta jaula?.
+          </Text>
+        }
       />
     </Stack>
   );
