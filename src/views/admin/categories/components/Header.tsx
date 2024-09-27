@@ -21,6 +21,7 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import createNumberMask from "text-mask-addons/dist/createNumberMask";
 import MaskedInput from "react-text-mask";
+import ColorPicker from "../../../../components/colorPicker/ColorPicker";
 
 interface CategoriesHeaderProps {
   selectedCategory: ICategory | null;
@@ -32,6 +33,7 @@ const initialFormState = {
   name: "",
   description: "",
   price: "",
+  color: "",
 };
 
 const currencyMask = createNumberMask({
@@ -62,6 +64,7 @@ function CategoriesHeader(props: CategoriesHeaderProps) {
         name: selectedCategory.name,
         description: selectedCategory.description,
         price: selectedCategory.price.toString(),
+        color: selectedCategory.color,
       });
       onOpen();
     }
@@ -158,6 +161,14 @@ function CategoriesHeader(props: CategoriesHeaderProps) {
                 placeholder="Nombre de la categoría"
               />
             </FormControl>
+            <ColorPicker 
+              value={form.color}
+              setValue={(value) => {
+                setFormChanged(true);
+                setForm({ ...form, color: value });
+              }}
+              label="Color"
+            />
             <FormControl mt={4}>
               <FormLabel>Descripción</FormLabel>
               <Input

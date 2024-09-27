@@ -250,6 +250,15 @@ function RegularTable(props: TableProps) {
                             break;
                         }
                         data = <Badge colorScheme={color}>{message}</Badge>;
+                      } else if (cell.column.type === "COLOR") {
+                        data = (
+                          <Box
+                            w="20px"
+                            h="20px"
+                            borderRadius="50%"
+                            bg={cell.value}
+                          />
+                        );
                       }
                       return (
                         <Td

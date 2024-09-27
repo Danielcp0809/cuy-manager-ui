@@ -1,7 +1,7 @@
 export interface ITableColumn {
     header: string;
     accessor: string;
-    type: "TEXT" | "NUMBER" | "DATE" | "CUSTOM" | "LINK" | "STATUS" | "PROGRESS";
+    type: "TEXT" | "NUMBER" | "DATE" | "CUSTOM" | "LINK" | "STATUS" | "PROGRESS" | "COLOR";
     config?: {
         isSticky?: boolean;
         successLabel?: string;

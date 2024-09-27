@@ -15,6 +15,11 @@ export const categoryColumns: ITableColumn[] = [
         type: "TEXT",
     },
     {
+        header: "Color",
+        accessor: "color",
+        type: "COLOR",
+    },
+    {
         header: "Precio",
         accessor: "price",
         type: "CUSTOM",
