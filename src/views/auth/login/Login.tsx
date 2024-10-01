@@ -61,9 +61,11 @@ function Login(props: LoginProps) {
       setLoading(true);
       setError("");
       const response = await login(email, password);
-      if (response) {
+      if (response.refresh_token && response.access_token) {
         const { enterprise, refresh_token, access_token } = response;
         dispatch(setLoginSession({ enterprise, refreshToken: refresh_token, token: access_token }));
+      } else {
+        throw new Error("Error al iniciar sesión");
       }
 
       setLoading(false);
