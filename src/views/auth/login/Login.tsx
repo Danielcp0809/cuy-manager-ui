@@ -13,10 +13,12 @@ import {
   InputRightElement,
   Text,
   useColorModeValue,
+  Image,
 } from "@chakra-ui/react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 // Assets
 import illustration from "../../../assets/img/auth/auth2.jpg";
+import logo from '../../../assets/img/auth/logo01.png';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { login } from "../../../services/api";
 
@@ -83,16 +85,19 @@ function Login(props: LoginProps) {
       <Flex
         maxW={{ base: "100%", md: "max-content" }}
         w="100%"
-        mx={{ base:   "auto", lg: "0px" }}
+        mx={{ base: "auto", lg: "0px" }}
         me="auto"
         h="100%"
         alignItems="start"
         justifyContent="center"
         mb={{ base: "30px", md: "60px" }}
         px={{ base: "25px", md: "0px" }}
-        mt={{ base: "40px", md: "14vh" }}
+        mt={{ base: "40px", md: "5vh" }}
         flexDirection="column"
       >
+        <Box mb={{md: '60px', base: '10px'}} width="100%" display="flex" justifyContent="center">
+          <Image width={{ lg: "350px", sm: "250px"}} src={logo} alt='Cuy manager - sistema de inventario' />
+        </Box>
         <Box me="auto">
           <Heading color={textColor} fontSize="36px" mb="10px">
             Iniciar sesión

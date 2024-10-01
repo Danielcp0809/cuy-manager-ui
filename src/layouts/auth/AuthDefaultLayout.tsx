@@ -22,7 +22,7 @@ function AuthDefaultLayout(props: AuthDefaultLayoutProps) {
         w="100%"
         maxW={{ md: "66%", lg: "1313px" }}
         mx="auto"
-        pt={{ sm: "50px", md: "0px" }}
+        pt={{ sm: "0px", md: "0px" }}
         px={{ lg: "30px", xl: "0px" }}
         ps={{ xl: "70px" }}
         justifyContent="start"
