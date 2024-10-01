@@ -19,12 +19,10 @@ const statsInitialState: IStatsProps = {
 function Stats(props: statsProps) {
   const authApi = useAuthApi();
   const [stats, setStats] = React.useState(statsInitialState);
-  const [loading, setLoading] = React.useState<boolean>(true);
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    setLoading(true);
     const getStats = async () => {
       try {
         const response = await authApi.get("/dashboard/stats", {
@@ -32,12 +30,10 @@ function Stats(props: statsProps) {
         });
         if (isMounted) {
           setStats(response.data);
-          setLoading(false);
         }
       } catch (error: any) {
         if (error.code === "ERR_CANCELED") return;
         console.error(error);
-        setLoading(false);
       }
     };
     getStats();

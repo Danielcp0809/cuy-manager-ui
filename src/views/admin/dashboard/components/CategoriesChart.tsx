@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import Card from "../../../../components/card/Card";
 import {
@@ -73,14 +74,8 @@ function CategoriesChart(props: CategoriesChartProps) {
           signal: controller.signal,
         });
         const categories = response.data as ICategoriesChartProps[];
-        console.log("🚀 ~ getData ~ categories:", categories)
-
         const data = categories.map((category: any) => category.total);
-        console.log("🚀 ~ getData ~ data:", data)
-
         const labels = categories.map((category: any) => category.label);
-        console.log("🚀 ~ getData ~ labels:", labels)
-
         if (isMounted) {
           setChartData(data);
           setChartOptions({
