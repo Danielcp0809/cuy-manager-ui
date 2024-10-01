@@ -1,7 +1,6 @@
 import { Icon } from "@chakra-ui/react";
 import { IRoute } from "../../interfaces/route.interface";
-import { GiCage } from "react-icons/gi";
-import { FaTags, FaSignInAlt} from "react-icons/fa";
+import { FaTags, FaSignInAlt, FaInbox} from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import Cages from "../../views/admin/cages/Cages";
 import Categories from "../../views/admin/categories/Categories";
@@ -28,7 +27,7 @@ const routes: IRoute[] = [
         name: "Jaulas",
         layout: "/admin",
         path: "/jaulas",
-        icon: <Icon as={GiCage}/>,
+        icon: <Icon as={FaInbox}/>,
         component: <Cages />,
     },
     {
