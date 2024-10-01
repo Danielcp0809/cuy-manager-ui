@@ -8,11 +8,13 @@ import CageCounters from "./components/CageCounters";
 import useCustomToast from "../../../core/hooks/useToastNotification";
 import { IoIosArrowBack } from "react-icons/io";
 
-const CageDetails = () => {
+interface CageDetailsProps {}
+
+function CageDetails(props: CageDetailsProps) {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
   const authApi = useAuthApi();
   const showNotification = useCustomToast();
+  const { id } = useParams<{ id: string }>();
   const [cageDetails, setCageDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
