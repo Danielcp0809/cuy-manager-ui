@@ -46,7 +46,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start": "npx http-server ./dist"
+    "start": "serve dist -s -n -L -p $PORT"
   },
   "eslintConfig": {
     "extends": "react-app"
