@@ -15,7 +15,7 @@ export const authAPI = axios.create({
 })
 
 export const login = async (username: string, password: string) => {
-    console.log(API_URL);
+    console.log(process.env.API_URL);
     const response = await axios.post<IAuthResponse>(`${API_URL}/auth/login`, { username, password });
     return response.data;
 }
