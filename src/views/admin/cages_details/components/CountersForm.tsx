@@ -140,7 +140,7 @@ function CountersForm(props: CountersFormProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={closeForm}>
+    <Modal size="xs" isOpen={isOpen} onClose={closeForm} scrollBehavior="inside">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

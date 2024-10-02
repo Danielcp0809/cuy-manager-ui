@@ -3,5 +3,5 @@
     left: 0;
     background: white;
     z-index: 1;
-    box-shadow: 2px 0 5px -2px gray;
+    border-left: 1px solid #e0e0e0;
   }

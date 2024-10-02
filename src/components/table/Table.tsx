@@ -1,9 +1,9 @@
 import {
   Badge,
   Box,
+  Button,
   Flex,
   IconButton,
-  Link,
   Progress,
   Table,
   Tbody,
@@ -209,14 +209,16 @@ function RegularTable(props: TableProps) {
                           ? getDataCallback(cell.row.original)
                           : cell.value;
                         data = (
-                          <Link
+                          <Button
+                            as="a"
                             color="brand.500"
                             fontSize="sm"
                             fontWeight="700"
+                            variant="outline"
                             href={href}
                           >
                             {cell.value}
-                          </Link>
+                          </Button>
                         );
                       } else if (cell.column.type === "STATUS") {
                         const getData = cell.column.callbacks?.getData;
@@ -265,8 +267,9 @@ function RegularTable(props: TableProps) {
                           {...cell.getCellProps()}
                           key={index}
                           fontSize={{ sm: "14px" }}
-                          minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                          minW={{ sm: "auto", md: "200px", lg: "auto" }}
                           borderColor="transparent"
+                          px={{ sm: isRowSticky(cell.column.id) ? "10px" : "20px" }}
                           className={
                             isRowSticky(cell.column.id) ? "sticky-column" : ""
                           }
