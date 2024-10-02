@@ -183,7 +183,7 @@ function NavbarAdmin(props: NavbarAdminProps) {
             {brandText}
           </Link>
         </Box>
-        <Box ms="auto" w={{ sm: "100%", md: "unset" }}>
+        <Box ms="auto" position={{sm:"absolute", md: "unset"}} right={{sm:"0px", md:"unset"}}>
           <NavbarAdminIsland
             onOpen={props.onOpen}
             logoText={props.logoText}

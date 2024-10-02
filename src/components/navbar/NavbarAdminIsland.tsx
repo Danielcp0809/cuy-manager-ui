@@ -1,7 +1,6 @@
 import {
   Avatar,
   Flex,
-  Icon,
   Menu,
   MenuButton,
   MenuList,
@@ -10,8 +9,6 @@ import {
   MenuItem,
 } from "@chakra-ui/react";
 import React from "react";
-import SearchBar from "./searchBar/SearchBar";
-import { MdNotificationsNone } from "react-icons/md";
 import { SidebarResponsive } from "../sidebar/Sidebar";
 import routes from "../../core/routes/routes";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -29,10 +26,10 @@ interface NavbarAdminIslandProps {
 
 function NavbarAdminIsland(props: NavbarAdminIslandProps) {
   const { secondary } = props;
-  const navbarIcon: string = useColorModeValue("gray.400", "white");
+  // const navbarIcon: string = useColorModeValue("gray.400", "white");
   let menuBg: string = useColorModeValue("white", "navy.800");
   const textColor: string = useColorModeValue("secondaryGray.900", "white");
-  const textColorBrand: string = useColorModeValue("brand.700", "brand.400");
+  // const textColorBrand: string = useColorModeValue("brand.700", "brand.400");
   const borderColor: string = useColorModeValue(
     "#E6ECFA",
     "rgba(135, 140, 189, 0.3)"
@@ -50,6 +47,7 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
   return (
     <Flex
       w={{ sm: "100%", md: "auto" }}
+      pl={{ sm: "20px", md: "10px"}}
       alignItems="center"
       flexDirection="row"
       bg={menuBg}
@@ -58,14 +56,13 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
       borderRadius="30px"
       boxShadow={shadow}
     >
-      <SearchBar
+      {/* <SearchBar
         mb={secondary ? { base: "10px", md: "unset" } : "unset"}
         me="10px"
         borderRadius="30px"
-      />
+      /> */}
       <SidebarResponsive routes={adminRoutes} />
-      <Menu>
-        {/* notifications menu */}
+      {/* <Menu>
         <MenuButton p="0px">
           <Icon
             mt="6px"
@@ -109,7 +106,6 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
               borderRadius="8px"
               mb="10px"
             >
-              {/* <ItemContent info="Horizon UI Dashboard PRO" aName="Alicia" /> */}
             </MenuItem>
             <MenuItem
               _hover={{ bg: "none" }}
@@ -118,11 +114,10 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
               borderRadius="8px"
               mb="10px"
             >
-              {/* <ItemContent info="Horizon Design System Free" aName="Josh Henry" /> */}
             </MenuItem>
           </Flex>
         </MenuList>
-      </Menu>
+      </Menu> */}
       <Menu>
         <MenuButton p="0px">
           <Avatar
@@ -159,14 +154,14 @@ function NavbarAdminIsland(props: NavbarAdminIslandProps) {
             </Text>
           </Flex>
           <Flex flexDirection="column" p="10px">
-            <MenuItem
+            {/* <MenuItem
               _hover={{ bg: "none" }}
               _focus={{ bg: "none" }}
               borderRadius="8px"
               px="14px"
             >
               <Text fontSize="sm">Configuración de perfil</Text>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem
               _hover={{ bg: "none" }}
               _focus={{ bg: "none" }}

@@ -102,7 +102,7 @@ function AdminLayout(props: any) {
               p={{ base: "20px", md: "30px" }}
               pe="20px"
               minH="100vh"
-              pt={{ base: "170px", md: "130px" }}
+              pt={{ base: "110px", md: "130px" }}
             >
               <Outlet />
             </Box>

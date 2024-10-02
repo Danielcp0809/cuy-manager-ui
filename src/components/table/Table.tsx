@@ -269,7 +269,9 @@ function RegularTable(props: TableProps) {
                           fontSize={{ sm: "14px" }}
                           minW={{ sm: "auto", md: "200px", lg: "auto" }}
                           borderColor="transparent"
-                          px={{ sm: isRowSticky(cell.column.id) ? "10px" : "20px" }}
+                          px={() => (
+                            isRowSticky(cell.column.id) ? { sm: "10px", lg: "20px" } : "20px"
+                          )}
                           className={
                             isRowSticky(cell.column.id) ? "sticky-column" : ""
                           }
