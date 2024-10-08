@@ -18,7 +18,7 @@ import {
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 // Assets
 import illustration from "../../../assets/img/auth/auth2.jpg";
-import logo from '../../../assets/img/auth/logo01.png';
+import logo from "../../../assets/img/auth/logo01.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { login } from "../../../services/api";
 
@@ -33,37 +33,36 @@ function Login(props: LoginProps) {
   // Chakra color mode
   const textColor = useColorModeValue("navy.700", "white");
   const textColorSecondary = "gray.400";
-//   const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
   const textColorBrand = useColorModeValue("brand.500", "white");
   const brandStars = useColorModeValue("brand.500", "brand.400");
-//   const googleBg = useColorModeValue("secondaryGray.300", "whiteAlpha.200");
-//   const googleText = useColorModeValue("navy.700", "white");
-//   const googleHover = useColorModeValue(
-//     { bg: "gray.200" },
-//     { bg: "whiteAlpha.300" }
-//   );
-//   const googleActive = useColorModeValue(
-//     { bg: "secondaryGray.300" },
-//     { bg: "whiteAlpha.200" }
-//   );
+  // Hooks
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  // States
   const [show, setShow] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
+
   const handleClickHidePass = () => setShow(!show);
+
   const handleClickLogin = async () => {
-    if(loading) return;
+    if (loading) return;
     try {
       setLoading(true);
       setError("");
       const response = await login(email, password);
       if (response.refresh_token && response.access_token) {
         const { enterprise, refresh_token, access_token } = response;
-        dispatch(setLoginSession({ enterprise, refreshToken: refresh_token, token: access_token }));
+        dispatch(
+          setLoginSession({
+            enterprise,
+            refreshToken: refresh_token,
+            token: access_token,
+          })
+        );
       } else {
         throw new Error("Error al iniciar sesión");
       }
@@ -73,15 +72,12 @@ function Login(props: LoginProps) {
       navigate(location.state?.previousUrl || "/admin/dashboard");
     } catch (error: any) {
       setLoading(false);
-
-      if(error.response.status === 404)
-        setError("Empresa no encontrada");
-      else if(error.response.status === 401)
-        setError("Password incorrecta");
-      else
-        setError("Error al iniciar sesión");
+      if (error.response.status === 404) setError("Empresa no encontrada");
+      else if (error.response.status === 401) setError("Password incorrecta");
+      else setError("Error al iniciar sesión");
     }
-  }
+  };
+
   return (
     <AuthDefaultLayout illustrationBackground={illustration}>
       <Flex
@@ -97,8 +93,17 @@ function Login(props: LoginProps) {
         mt={{ base: "40px", md: "5vh" }}
         flexDirection="column"
       >
-        <Box mb={{md: '60px', base: '10px'}} width="100%" display="flex" justifyContent="center">
-          <Image width={{ lg: "350px", sm: "250px"}} src={logo} alt='Cuy manager - sistema de inventario' />
+        <Box
+          mb={{ md: "60px", base: "10px" }}
+          width="100%"
+          display="flex"
+          justifyContent="center"
+        >
+          <Image
+            width={{ lg: "350px", sm: "250px" }}
+            src={logo}
+            alt="Cuy manager - sistema de inventario"
+          />
         </Box>
         <Box me="auto">
           <Heading color={textColor} fontSize="36px" mb="10px">
@@ -125,30 +130,6 @@ function Login(props: LoginProps) {
           me="auto"
           mb={{ base: "20px", md: "auto" }}
         >
-          {/* <Button
-            fontSize="sm"
-            me="0px"
-            mb="26px"
-            py="15px"
-            h="50px"
-            borderRadius="16px"
-            bg={googleBg}
-            color={googleText}
-            fontWeight="500"
-            _hover={googleHover}
-            _active={googleActive}
-            _focus={googleActive}
-          >
-            <Icon as={FcGoogle} w="20px" h="20px" me="10px" />
-            Sign in with Google
-          </Button> */}
-          {/* <Flex align="center" mb="25px">
-            <HSeparator />
-            <Text color="gray.400" mx="14px">
-              or
-            </Text>
-            <HSeparator />
-          </Flex> */}
           <FormControl>
             <FormLabel
               display="flex"
@@ -232,7 +213,7 @@ function Login(props: LoginProps) {
               </NavLink>
             </Flex>
             <Button
-              isLoading={false}
+              isLoading={loading}
               fontSize="sm"
               variant="brand"
               fontWeight="500"
@@ -242,7 +223,7 @@ function Login(props: LoginProps) {
               disabled={email === "" || password === ""}
               onClick={handleClickLogin}
             >
-              Iniciar session
+              Iniciar sesión
             </Button>
           </FormControl>
           <Flex
