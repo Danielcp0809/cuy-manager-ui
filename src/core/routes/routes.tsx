@@ -7,6 +7,7 @@ import Categories from "../../views/admin/categories/Categories";
 import Dashboard from "../../views/admin/dashboard/Dashboard";
 import Login from "../../views/auth/login/Login";
 import CageDetails from "../../views/admin/cages_details/CageDetails";
+import ForgotPassword from "../../views/auth/forgotPassword/ForgotPassword";
 
 const routes: IRoute[] = [
     {
@@ -15,6 +16,13 @@ const routes: IRoute[] = [
         path: "/login",
         icon: <Icon as={FaSignInAlt}/>,
         component: <Login />,
+    },
+    {
+        name: "Forgot Password",
+        layout: "/auth",
+        path: "/forgot-password",
+        icon: null,
+        component: <ForgotPassword />,
     },
     {
         name: "Dashboard",
