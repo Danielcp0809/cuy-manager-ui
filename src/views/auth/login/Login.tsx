@@ -66,14 +66,14 @@ function Login(props: LoginProps) {
       } else {
         throw new Error("Error al iniciar sesión");
       }
-
       setLoading(false);
-
       navigate(location.state?.previousUrl || "/admin/dashboard");
     } catch (error: any) {
       setLoading(false);
-      if (error.response.status === 404) setError("Empresa no encontrada");
-      else if (error.response.status === 401) setError("Password incorrecta");
+      if(error.response){
+        if (error.response.status === 404) setError("Empresa no encontrada");
+        else if (error.response.status === 401) setError("Password incorrecta");
+      }
       else setError("Error al iniciar sesión");
     }
   };
@@ -81,7 +81,7 @@ function Login(props: LoginProps) {
   return (
     <AuthDefaultLayout illustrationBackground={illustration}>
       <Flex
-        maxW={{ base: "100%", md: "max-content" }}
+        maxW={{ base: "100%", xl: "420px", md: "420px" }}
         w="100%"
         mx={{ base: "auto", lg: "0px" }}
         me="auto"
@@ -220,7 +220,7 @@ function Login(props: LoginProps) {
               w="100%"
               h="50"
               mb="24px"
-              disabled={email === "" || password === ""}
+              isDisabled={email === "" || password === ""}
               onClick={handleClickLogin}
             >
               Iniciar sesión
