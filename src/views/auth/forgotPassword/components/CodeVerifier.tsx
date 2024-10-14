@@ -15,7 +15,9 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
+import { forgotPassword, verifyCode } from "../../../../services/api";
+import useCustomToast from "../../../../core/hooks/useToastNotification";
 
 interface CodeVerifierProps {
   haveCode: boolean;
@@ -26,13 +28,28 @@ interface CodeVerifierProps {
 
 function CodeVerifier(props: CodeVerifierProps) {
   const { haveCode, email, setEmail, nextStep } = props;
-  //   const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const [code, setCode] = React.useState("");
+  const [timeLeft, setTimeLeft] = React.useState(0);
+  // Chakra theme
   const textColor = useColorModeValue("navy.700", "white");
   const textColorSecondary = "gray.400";
   const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
   const textColorBrand = useColorModeValue("brand.500", "white");
+
+  const showNotification = useCustomToast();
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      setError("");
+      return;
+    }
+    const intervalId = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1000); // Restar 1 segundo
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
 
   const disableButton = () => {
     if (!haveCode) {
@@ -51,11 +68,72 @@ function CodeVerifier(props: CodeVerifierProps) {
     return true;
   };
 
-  const handleVerifyCode = () => {
-    const isValidEmail = verifyEmail();
-    if (!isValidEmail) return;
-    setError("");
-    nextStep();
+  const handleVerifyCode = async () => {
+    try {
+      setError("");
+      setTimeLeft(0);
+      const isValidEmail = verifyEmail();
+      if (!isValidEmail) return;
+      setLoading(true);
+      await verifyCode(email, code);
+      showNotification('Código verificado', 'success', 'El código ha sido verificado correctamente');
+      setLoading(false);
+      setError("");
+      nextStep();
+    } catch (error: any) {
+      console.error(error);
+      setLoading(false);
+      if (!error.response) {
+        setError("Error al enviar el código")
+        return;
+      }
+      if (error.response.status === 401) {
+        setError("Código incorrecto");
+      } else if (error.response.status === 400) {
+        setError("El código no ha sido generado");
+      } else if (error.response.status === 404) {
+        setError("El email ingresado no está asociado a ninguna cuenta");
+      } else if (error.response.status === 403) {
+        setError("Código expirado");
+      } else {
+        setError("Error al enviar el código");
+      }
+    }
+  };
+
+  const handleSubmitCode = async () => {
+    try {
+      setError("");
+      const isValidEmail = verifyEmail();
+      if (!isValidEmail) return;
+      await forgotPassword(email);
+      showNotification('Código enviado', 'success', 'Se ha enviado un código a tu correo electrónico');
+      setError("");
+    } catch (error: any) {
+      console.error(error);
+      if (!error.response) {
+        setError("Error al enviar el código")
+        return;
+      }
+      if (error.response.status === 403) {
+        setError(
+          "Tienes que esperar 5 minutos para volver a enviar el código. Tiempo restante"
+        );
+        const message = JSON.parse(error.response.data.message);
+        setTimeLeft(message.remainingTime);
+      } else if (error.response.status === 404) {
+        setError("El email ingresado no está asociado a ninguna cuenta");
+      } else {
+        setError("Error al enviar el código");
+      }
+    }
+  };
+
+
+  const getRemainingTimeTextError = () => {
+    const minutes = Math.floor(timeLeft / 60000);
+    const seconds = ((timeLeft % 60000) / 1000).toFixed(0);
+    return `${error}: ${minutes}:${Number(seconds) < 10 ? "0" : ""}${seconds}`;
   };
 
   return (
@@ -141,7 +219,7 @@ function CodeVerifier(props: CodeVerifierProps) {
               </PinInput>
             </HStack>
             <Button
-              isLoading={false}
+              isLoading={loading}
               fontSize="sm"
               variant="brand"
               fontWeight="500"
@@ -164,7 +242,7 @@ function CodeVerifier(props: CodeVerifierProps) {
           >
             <Text color={textColorDetails} fontWeight="400" fontSize="14px">
               ¿No lo has recibido?
-              <Link>
+              <Link onClick={handleSubmitCode}>
                 <Text
                   color={textColorBrand}
                   as="span"
@@ -181,7 +259,7 @@ function CodeVerifier(props: CodeVerifierProps) {
       {error && (
         <Alert mt="20px" status="error" borderRadius="10px">
           <AlertIcon />
-          {error}
+          {timeLeft > 0 ? getRemainingTimeTextError() : error}
         </Alert>
       )}
     </Box>

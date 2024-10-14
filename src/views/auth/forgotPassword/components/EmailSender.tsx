@@ -38,7 +38,7 @@ function EmailSender(props: EmailSenderProps) {
   const showNotification = useCustomToast();
 
   useEffect(() => {
-    if (timeLeft < 0) {
+    if (timeLeft <= 0) {
       setError("");
       return;
     }
