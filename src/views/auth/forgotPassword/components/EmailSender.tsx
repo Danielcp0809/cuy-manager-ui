@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Button,
@@ -24,6 +24,7 @@ interface EmailSenderProps {
 function EmailSender(props: EmailSenderProps) {
   const { nextStep, email, setEmail, setHaveCode } = props;
   const [error, setError] = React.useState("");
+  const [timeLeft, setTimeLeft] = React.useState(0);
   // const [loading, setLoading] = React.useState(false);
   // const [error, setError] = React.useState("");
 
@@ -33,11 +34,24 @@ function EmailSender(props: EmailSenderProps) {
   const textColorBrand = useColorModeValue("brand.500", "white");
   const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
 
+  useEffect(() => {
+    if (timeLeft < 0) {
+      setError("");
+      return;
+    };
+    const intervalId = setInterval(() => {
+      setTimeLeft(prevTime => prevTime - 1000); // Restar 1 segundo
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
+
   const handleSubmitCode = () => {
     const isValidEmail = validateEmail();
     if (!isValidEmail) return;
-    nextStep();
-    setError("");
+    setError("Tienes que esperar 5 minutos para volver a enviar el código. Tiempo restante");
+    setTimeLeft(17896);
+    // nextStep();
+    // setError("");
   };
 
   const validateEmail = () => {
@@ -54,6 +68,12 @@ function EmailSender(props: EmailSenderProps) {
     nextStep();
     setError("");
   };
+
+  const getRemainingTimeTextError = () => {
+    const minutes = Math.floor(timeLeft / 60000);
+    const seconds = ((timeLeft % 60000) / 1000).toFixed(0);
+    return `${error}: ${minutes}:${Number(seconds) < 10 ? '0' : ''}${seconds}`;
+  }
 
   return (
     <Box>
@@ -118,7 +138,7 @@ function EmailSender(props: EmailSenderProps) {
             w="100%"
             h="50"
             mb="24px"
-            isDisabled={email === ""}
+            isDisabled={email === "" || timeLeft > 0}
             onClick={handleSubmitCode}
           >
             Enviar código
@@ -144,7 +164,7 @@ function EmailSender(props: EmailSenderProps) {
       {error && (
         <Alert mt="20px" status="error" borderRadius="10px">
           <AlertIcon />
-          {error}
+          {timeLeft > 0 ? getRemainingTimeTextError() : error}
         </Alert>
       )}
     </Box>
