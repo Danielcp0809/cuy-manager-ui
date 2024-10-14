@@ -16,10 +16,10 @@ import {
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 
 interface UpdatePasswordFormProps {
     submitRequest: any;
+    loading: boolean;
 }
 
 type UpdatePasswordFrom = {
@@ -28,7 +28,7 @@ type UpdatePasswordFrom = {
 };
 
 function UpdatePasswordForm(props: UpdatePasswordFormProps) {
-  const { submitRequest } = props;
+  const { submitRequest, loading } = props;
   const [showNewPass, setShowNewPass] = React.useState(false);
   const [showConfirmPass, setShowConfirmPass] = React.useState(false);
   //   const [errors, setErrors] = React.useState<IFormsErrors>({});
@@ -37,8 +37,6 @@ function UpdatePasswordForm(props: UpdatePasswordFormProps) {
 
   const handleClickHideNewPass = () => setShowNewPass(!showNewPass);
   const handleCLickHideConfirmPass = () => setShowConfirmPass(!showConfirmPass);
-
-  const navigate = useNavigate();
 
   const {
     register,
@@ -49,8 +47,6 @@ function UpdatePasswordForm(props: UpdatePasswordFormProps) {
 
   const handleOnSubmit: SubmitHandler<UpdatePasswordFrom> = (data) => {
     submitRequest(data.newPassword);
-    console.log("🚀 ~ UpdatePasswordForm ~ data.newPassword:", data.newPassword)
-    navigate("/auth/login");
   };
 
   const password = watch("newPassword");
@@ -176,7 +172,7 @@ function UpdatePasswordForm(props: UpdatePasswordFormProps) {
           </FormErrorMessage>
         </FormControl>
         <Button
-          isLoading={false}
+          isLoading={loading}
           fontSize="sm"
           variant="brand"
           fontWeight="500"

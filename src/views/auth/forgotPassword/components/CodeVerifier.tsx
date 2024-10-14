@@ -23,14 +23,15 @@ interface CodeVerifierProps {
   haveCode: boolean;
   email: string;
   setEmail: any;
+  code: string;
+  setCode: any;
   nextStep: () => void;
 }
 
 function CodeVerifier(props: CodeVerifierProps) {
-  const { haveCode, email, setEmail, nextStep } = props;
+  const { haveCode, email, setEmail, nextStep, code, setCode} = props;
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
-  const [code, setCode] = React.useState("");
   const [timeLeft, setTimeLeft] = React.useState(0);
   // Chakra theme
   const textColor = useColorModeValue("navy.700", "white");

@@ -37,11 +37,11 @@ export const verifyCode = async (email: string, code: string) => {
   return response.data;
 }
 
-export const resetPassword = async (email: string, code: string, newPassword: string) => {
+export const resetPassword = async (email: string, code: string, password: string) => {
   const response = await axios.post(`${API_URL}/auth/reset-password`, {
     code,
     email,
-    newPassword,
+    password,
   });
   return response.data;
 }
