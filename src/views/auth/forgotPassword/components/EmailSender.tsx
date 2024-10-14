@@ -14,6 +14,7 @@ import {
   Alert,
 } from "@chakra-ui/react";
 import { forgotPassword } from "../../../../services/api";
+import useCustomToast from "../../../../core/hooks/useToastNotification";
 
 interface EmailSenderProps {
   nextStep: any;
@@ -34,6 +35,8 @@ function EmailSender(props: EmailSenderProps) {
   const textColorBrand = useColorModeValue("brand.500", "white");
   const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
 
+  const showNotification = useCustomToast();
+
   useEffect(() => {
     if (timeLeft < 0) {
       setError("");
@@ -52,6 +55,7 @@ function EmailSender(props: EmailSenderProps) {
       if (!isValidEmail) return;
       setLoading(true);
       await forgotPassword(email);
+      showNotification('Código enviado', 'success', 'Se ha enviado un código a tu correo electrónico');
       setLoading(false);
       nextStep();
       setError("");
