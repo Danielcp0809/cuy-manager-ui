@@ -21,3 +21,27 @@ export const login = async (username: string, password: string) => {
   });
   return response.data;
 };
+
+export const forgotPassword = async (email: string) => {
+  const response = await axios.post(`${API_URL}/auth/forgot-password`, {
+    email,
+  });
+  return response.data;
+};
+
+export const verifyCode = async (email: string, code: string) => {
+  const response = await axios.post(`${API_URL}/auth/verify-code`, {
+    email,
+    code,
+  });
+  return response.data;
+}
+
+export const resetPassword = async (email: string, code: string, newPassword: string) => {
+  const response = await axios.post(`${API_URL}/auth/reset-password`, {
+    code,
+    email,
+    newPassword,
+  });
+  return response.data;
+}
