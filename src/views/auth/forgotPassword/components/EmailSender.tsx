@@ -13,6 +13,7 @@ import {
   AlertIcon,
   Alert,
 } from "@chakra-ui/react";
+import { forgotPassword } from "../../../../services/api";
 
 interface EmailSenderProps {
   nextStep: any;
@@ -25,8 +26,7 @@ function EmailSender(props: EmailSenderProps) {
   const { nextStep, email, setEmail, setHaveCode } = props;
   const [error, setError] = React.useState("");
   const [timeLeft, setTimeLeft] = React.useState(0);
-  // const [loading, setLoading] = React.useState(false);
-  // const [error, setError] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   // Chakra theme
   const textColor = useColorModeValue("navy.700", "white");
@@ -38,20 +38,42 @@ function EmailSender(props: EmailSenderProps) {
     if (timeLeft < 0) {
       setError("");
       return;
-    };
+    }
     const intervalId = setInterval(() => {
-      setTimeLeft(prevTime => prevTime - 1000); // Restar 1 segundo
+      setTimeLeft((prevTime) => prevTime - 1000); // Restar 1 segundo
     }, 1000);
     return () => clearInterval(intervalId);
   }, [timeLeft]);
 
-  const handleSubmitCode = () => {
-    const isValidEmail = validateEmail();
-    if (!isValidEmail) return;
-    setError("Tienes que esperar 5 minutos para volver a enviar el código. Tiempo restante");
-    setTimeLeft(17896);
-    // nextStep();
-    // setError("");
+  const handleSubmitCode = async () => {
+    try {
+      setError("");
+      const isValidEmail = validateEmail();
+      if (!isValidEmail) return;
+      setLoading(true);
+      await forgotPassword(email);
+      setLoading(false);
+      nextStep();
+      setError("");
+    } catch (error: any) {
+      console.error(error);
+      setLoading(false);
+      if (!error.response) {
+        setError("Error al enviar el código")
+        return;
+      }
+      if (error.response.status === 403) {
+        setError(
+          "Tienes que esperar 5 minutos para volver a enviar el código. Tiempo restante"
+        );
+        const message = JSON.parse(error.response.data.message);
+        setTimeLeft(message.remainingTime);
+      } else if (error.response.status === 404) {
+        setError("El email ingresado no está asociado a ninguna cuenta");
+      } else {
+        setError("Error al enviar el código");
+      }
+    }
   };
 
   const validateEmail = () => {
@@ -72,8 +94,8 @@ function EmailSender(props: EmailSenderProps) {
   const getRemainingTimeTextError = () => {
     const minutes = Math.floor(timeLeft / 60000);
     const seconds = ((timeLeft % 60000) / 1000).toFixed(0);
-    return `${error}: ${minutes}:${Number(seconds) < 10 ? '0' : ''}${seconds}`;
-  }
+    return `${error}: ${minutes}:${Number(seconds) < 10 ? "0" : ""}${seconds}`;
+  };
 
   return (
     <Box>
@@ -131,7 +153,7 @@ function EmailSender(props: EmailSenderProps) {
             }}
           />
           <Button
-            isLoading={false}
+            isLoading={loading}
             fontSize="sm"
             variant="brand"
             fontWeight="500"
