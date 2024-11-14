@@ -133,7 +133,7 @@ function NavbarAdmin(props: NavbarAdminProps) {
           <Breadcrumb>
             <BreadcrumbItem color={secondaryText} fontSize="sm" mb="5px">
               <BreadcrumbLink as={domLink} to="/" color={secondaryText}>
-                Home
+                Inicio
               </BreadcrumbLink>
             </BreadcrumbItem>
 
