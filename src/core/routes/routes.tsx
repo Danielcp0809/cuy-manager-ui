@@ -1,6 +1,7 @@
 import { Icon } from "@chakra-ui/react";
 import { IRoute } from "../../interfaces/route.interface";
 import { FaTags, FaSignInAlt, FaInbox} from "react-icons/fa";
+import { BiTask } from "react-icons/bi";
 import { MdDashboard } from "react-icons/md";
 import Cages from "../../views/admin/cages/Cages";
 import Categories from "../../views/admin/categories/Categories";
@@ -8,6 +9,7 @@ import Dashboard from "../../views/admin/dashboard/Dashboard";
 import Login from "../../views/auth/login/Login";
 import CageDetails from "../../views/admin/cages_details/CageDetails";
 import ForgotPassword from "../../views/auth/forgotPassword/ForgotPassword";
+import Events from "../../views/admin/events/Events";
 
 const routes: IRoute[] = [
     {
@@ -51,6 +53,13 @@ const routes: IRoute[] = [
         path: "/categorias",
         icon: <Icon as={FaTags}/>,
         component: <Categories />,
+    },
+    {
+        name: "Eventos",
+        layout: "/admin",
+        path: "/eventos",
+        icon: <Icon as={BiTask}/>,
+        component: <Events />,
     }
 ]
 
