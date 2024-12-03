@@ -1,14 +1,20 @@
 import { Card, CardBody, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import "./EventButton.css";
+import { useNavigate } from "react-router-dom";
 interface EventButtonProps {
   title: string;
   img: string;
   description: string;
+  redirect: string;
 }
 
 function EventButton(props: EventButtonProps) {
-  const { title, img, description } = props;
+  const { title, img, description, redirect } = props;
+  const navigate = useNavigate();
+  const handleOnClick = () => {
+    navigate(redirect);
+  }
   return (
     <Card
       direction={{ base: "column", sm: "row" }}
@@ -17,6 +23,7 @@ function EventButton(props: EventButtonProps) {
       padding="10px"
       className="event-card"
       maxHeight={100}
+      onClick={handleOnClick}
     >
       <Image
         objectFit="cover"

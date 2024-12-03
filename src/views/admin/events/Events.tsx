@@ -15,31 +15,37 @@ function Events(props: EventsProps) {
     {
       title: "Compra",
       img: salesEventImg,
+      redirect: "/admin/eventos/compra",
       description: "Registra la adquisición de cuyes.",
     },
     {
       title: "Venta",
       img: purchaseEventImg,
+      redirect: "/admin/eventos/venta",
       description: "Registra las ventas de cuyes.",
     },
     {
       title: "Empadre",
       img: breedingEventImg,
+      redirect: "/admin/eventos/empadre",
       description: "Controla los empadres de cuyes.",
     },
     {
       title: "Muerte",
       img: deathEventImg,
+      redirect: "/admin/eventos/muerte",
       description: "Registra las pérdidas por mortalidad.",
     },
     {
       title: "Sanidad",
       img: healthEventImg,
+      redirect: "/admin/eventos/sanidad",
       description: "Gestiona eventos sanitarios de los cuyes.",
     },
     {
       title: "Engorde",
       img: fatteningEventImg,
+      redirect: "/admin/eventos/engorde",
       description: "Supervisa el engorde de cuyes.",
     },
   ];
@@ -56,6 +62,7 @@ function Events(props: EventsProps) {
             title={event.title}
             img={event.img}
             description={event.description}
+            redirect={event.redirect}
           />
         ))}
       </SimpleGrid>

@@ -10,6 +10,7 @@ import Login from "../../views/auth/login/Login";
 import CageDetails from "../../views/admin/cages_details/CageDetails";
 import ForgotPassword from "../../views/auth/forgotPassword/ForgotPassword";
 import Events from "../../views/admin/events/Events";
+import BreedingEvent from "../../views/admin/events/routes/breedingEvent/BreedingEvent";
 
 const routes: IRoute[] = [
     {
@@ -60,7 +61,14 @@ const routes: IRoute[] = [
         path: "/eventos",
         icon: <Icon as={BiTask}/>,
         component: <Events />,
-    }
+    },
+    {
+        name: "Empadre",
+        layout: "/admin",
+        path: "/eventos/empadre",
+        hidden: true,
+        component: <BreedingEvent />,
+    },
 ]
 
 export default routes;
