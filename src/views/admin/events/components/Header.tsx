@@ -19,11 +19,13 @@ interface HeaderProps {
   formTitle: string;
   formDisclosure: ReturnType<typeof useDisclosure>;
   loading: boolean;
+  isValid: boolean;
   onSaveForm: () => void;
 }
 
 function Header(props: HeaderProps) {
-  const { form, formTitle, onSaveForm, formDisclosure, loading } = props;
+  const { form, formTitle, onSaveForm, formDisclosure, loading, isValid } =
+    props;
   const { isOpen, onOpen, onClose } = formDisclosure;
   const initialRef = React.useRef<HTMLInputElement>(null);
   const closeForm = () => {
@@ -31,7 +33,7 @@ function Header(props: HeaderProps) {
   };
   const handleClickSave = () => {
     onSaveForm();
-  }
+  };
 
   return (
     <Box>
@@ -43,17 +45,21 @@ function Header(props: HeaderProps) {
         icon={<AddIcon />}
         onClick={onOpen}
       />
-      <Modal finalFocusRef={initialRef} isOpen={isOpen} onClose={closeForm} size='4xl'>
+      <Modal
+        finalFocusRef={initialRef}
+        isOpen={isOpen}
+        onClose={closeForm}
+        size="4xl"
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{formTitle}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody pb={6}>
-            {form}
-          </ModalBody>
+          <ModalBody pb={6}>{form}</ModalBody>
           <ModalFooter>
-          <Button
+            <Button
               isLoading={loading}
+              isDisabled={!isValid}
               colorScheme="brand"
               mr={3}
               onClick={handleClickSave}
