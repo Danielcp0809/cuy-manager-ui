@@ -46,8 +46,18 @@ function CageSelectionForm(props: CageSelectionFormProps) {
   const quantity = watch(quantityFormName);
 
   useEffect(() => {
+    const filterOptions = (options: ICageOptions[]): ICageOptions[] => {
+      const filteredOptions: ICageOptions[] = []
+      for (let option of options) {
+        option.counters = option.counters.filter(counter => counter.amount > 0)
+        if (option.counters.length > 0) {
+          filteredOptions.push(option)
+        }
+      }
+      return filteredOptions
+    }
     if (!cages || cages.length === 0) return;
-    const cagesOptions = cages.map((cage) => {
+    const cagesOptions = filterOptions(cages).map((cage) => {
       return {
         id: cage.id,
         code: cage.code,
