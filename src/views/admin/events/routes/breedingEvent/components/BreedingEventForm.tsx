@@ -5,10 +5,12 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  IconButton,
   Input,
+  InputGroup,
+  InputRightElement,
   Select,
   SimpleGrid,
-  Switch,
   Text,
   Textarea,
 } from "@chakra-ui/react";
@@ -21,7 +23,10 @@ import { NewBreedingEventForm } from "../BreedingEvent";
 import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import "./BreedingEventForm.css";
 import { getFormattedDate } from "../../../../../../shared/utils";
+import { IoMdAdd } from "react-icons/io";
+import { GoDash } from "react-icons/go";
 
 interface BreedingEventFormProps {
   useFormInstance: UseFormReturn<NewBreedingEventForm, any, undefined>;
@@ -38,11 +43,12 @@ function BreedingEventForm(props: BreedingEventFormProps) {
   const showNotification = useCustomToast();
 
   const {
+    watch,
     control,
     register,
     formState: { errors },
     trigger,
-    setValue
+    setValue,
   } = useFormInstance;
 
   useEffect(() => {
@@ -83,10 +89,22 @@ function BreedingEventForm(props: BreedingEventFormProps) {
     setCageOptionsList(mappedOptions);
   }, [cagesOptions]);
 
-  useEffect(() => {
-    setValue("date", new Date())
-    trigger("date")
-  },[])
+  // useEffect(() => {
+  //   setValue("date", new Date());
+  //   trigger("date");
+  // }, []);
+
+  const monthsDuration = watch("months_duration");
+  const maxMonths = 18;
+
+  const updateCounter = (action: "increase" | "decrease") => {
+    const value = monthsDuration ? Number(monthsDuration) : 0; // 6 months by default
+    let amount = action === "increase" ? value + 1 : value - 1;
+    if (amount < 0) amount = 0;
+    if (amount > maxMonths) amount = maxMonths;
+    setValue("months_duration", amount);
+    trigger("months_duration");
+  };
 
   return (
     <SimpleGrid columns={1} spacing={5}>
@@ -135,7 +153,11 @@ function BreedingEventForm(props: BreedingEventFormProps) {
               </FormControl>
               <FormControl>
                 <FormLabel>Descripción</FormLabel>
-                <Textarea data-key="code" placeholder="Información adicional" {...register("description")} />
+                <Textarea
+                  data-key="code"
+                  placeholder="Información adicional"
+                  {...register("description")}
+                />
               </FormControl>
             </Box>
           </Box>
@@ -143,37 +165,74 @@ function BreedingEventForm(props: BreedingEventFormProps) {
         <Divider />
         <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={5}>
           <Box display="flex" flexDir="column" rowGap={5}>
-            <FormControl>
+            <FormControl width="100%">
               <FormLabel>Fecha del empadre</FormLabel>
               <Controller
                 name="date"
                 control={control}
                 rules={{ required: "La fecha de nacimiento es obligatoria" }}
-                render={({field}) => (
-                  <DatePicker 
+                render={({ field }) => (
+                  <DatePicker
                     {...field}
                     onChange={(date) => {
                       setValue("date", date ? date : new Date());
                       trigger("date");
                     }}
-                    value={field.value ? getFormattedDate(field.value.getTime(), false) : ""}
+                    value={
+                      field.value
+                        ? getFormattedDate(field.value.getTime(), false)
+                        : ""
+                    }
                     todayButton="Hoy"
                     placeholderText="Ingresa la fecha"
                     maxDate={new Date()}
-                    customInput={
-                      <Input data-key="code"/>
-                    }
+                    customInput={<Input width="100%" />}
                   />
                 )}
               />
             </FormControl>
           </Box>
-          <Box display="flex" flexDir="column" rowGap={5} >
-            <FormControl display='flex' justifyContent='center' flexDir="column" gap={3}>
-              <FormLabel htmlFor='continuous_breeding' mb='0'>
-                Empadre Continuo
-              </FormLabel>
-              <Switch {...register('continuous_breeding')} id='continuous_breeding' />
+          <Box display="flex" flexDir="column" rowGap={5}>
+            <FormControl isRequired={true} isInvalid={!!errors.months_duration}>
+              <FormLabel>Meses de duración</FormLabel>
+              <Box display="flex" gap="5px">
+                <InputGroup>
+                  <Input
+                    id="months_duration"
+                    type="number"
+                    placeholder="Meses"
+                    max={maxMonths}
+                    {...register("months_duration", {
+                      min: {
+                        value: 1,
+                        message: "La cantidad mínima de meses es 1",
+                      },
+                      max: {
+                        value: maxMonths,
+                        message: `La cantidad máxima de meses es ${maxMonths}`,
+                      },
+                    })}
+                  />
+                  <InputRightElement mr={5}>
+                    Meses
+                  </InputRightElement>
+                </InputGroup>
+                <Box display="flex" alignItems="center" gap="5px">
+                  <IconButton
+                    aria-label="Aumentar contador"
+                    onClick={() => updateCounter("increase")}
+                    icon={<IoMdAdd />}
+                  />
+                  <IconButton
+                    aria-label="Reducir contador"
+                    onClick={() => updateCounter("decrease")}
+                    icon={<GoDash />}
+                  />
+                </Box>
+              </Box>
+              <FormErrorMessage>
+                {errors.months_duration && errors.months_duration.message}
+              </FormErrorMessage>
             </FormControl>
           </Box>
         </SimpleGrid>
