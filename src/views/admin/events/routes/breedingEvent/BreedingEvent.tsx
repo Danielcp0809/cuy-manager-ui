@@ -3,6 +3,8 @@ import BreedingEventForm from "./components/BreedingEventForm";
 import { Box, useDisclosure } from "@chakra-ui/react";
 import Header from "../../components/Header";
 import { useForm } from "react-hook-form";
+import useCustomToast from "../../../../../core/hooks/useToastNotification";
+import useAuthApi from "../../../../../core/hooks/useAuthApi";
 
 interface BreedingEventProps {}
 
@@ -26,8 +28,9 @@ export type NewBreedingEventForm = {
 function BreedingEvent(props: BreedingEventProps) {
   const [loading, setLoading] = React.useState(false);
   const [isSameCategory, setIsSameCategory] = React.useState<boolean>(false);
-
+  const showNotification = useCustomToast();
   const formDisclosure = useDisclosure();
+  const authApi = useAuthApi();
   const { onClose: onFormClose } = formDisclosure;
 
   const useFormInstance = useForm<NewBreedingEventForm>({ mode: "onChange" });
@@ -47,13 +50,39 @@ function BreedingEvent(props: BreedingEventProps) {
     setIsSameCategory(maleCategoryId === femaleCategoryId);
   }, [maleCategoryId, femaleCategoryId]);
 
-  const handleClickSave = () => {
+  const handleClickSave = async () => {
     setLoading(true);
-    console.log("Save");
-    console.log(useFormInstance.getValues());
-    onFormClose();
+    await createNewBreedingEvent(useFormInstance.getValues());
     setLoading(false);
   };
+
+  const createNewBreedingEvent = async (values: NewBreedingEventForm) => {
+    const parsedValues = parseBreedingFormValues(values);
+    try {
+      await authApi.post("/events/breeding", parsedValues)
+      showNotification("Empadre guardado", "success", "El evento se guardó correctamente")
+      onFormClose();
+    } catch (error) {
+      console.error(error)
+      setLoading(false)
+      showNotification( "Error", "error" ,"Ocurrió un error al guardar el empadre")
+    }
+  }
+
+  const parseBreedingFormValues = (values: NewBreedingEventForm) => {
+    return {
+      male_cage_id: values.male.cage_id,
+      male_category_id: values.male.category_id,
+      male_quantity: values.male.quantity,
+      female_cage_id: values.female.cage_id,
+      female_category_id: values.female.category_id,
+      female_quantity: values.female.quantity,
+      cage_id: values.cage_id,
+      description: values.description,
+      date: Math.floor(values.date.getTime() / 1000),
+      continuous_breeding: values.continuous_breeding,
+    }
+  }
 
   return (
     <Box display="flex" flexDir="column" rowGap={5}>
