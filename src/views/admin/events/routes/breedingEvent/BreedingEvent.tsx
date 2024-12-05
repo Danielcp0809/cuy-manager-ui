@@ -22,7 +22,7 @@ export type NewBreedingEventForm = {
   cage_id: string;
   description: string;
   date: Date;
-  continuous_breeding: boolean;
+  months_duration: number;
 };
 
 function BreedingEvent(props: BreedingEventProps) {
@@ -33,7 +33,22 @@ function BreedingEvent(props: BreedingEventProps) {
   const authApi = useAuthApi();
   const { onClose: onFormClose } = formDisclosure;
 
-  const useFormInstance = useForm<NewBreedingEventForm>({ mode: "onChange" });
+  const useFormInstance = useForm<NewBreedingEventForm>({ mode: "onChange", defaultValues: {
+    male:{
+      cage_id: undefined,
+      category_id: undefined,
+      quantity: undefined,
+    },
+    female:{
+      cage_id: undefined,
+      category_id: undefined,
+      quantity: undefined,
+    },
+    cage_id: undefined,
+    description: undefined,
+    date: new Date(),
+    months_duration: 6,
+  }});
   const {
     watch,
     formState: { isValid },
@@ -80,7 +95,7 @@ function BreedingEvent(props: BreedingEventProps) {
       cage_id: values.cage_id,
       description: values.description,
       date: Math.floor(values.date.getTime() / 1000),
-      continuous_breeding: values.continuous_breeding,
+      months_duration: values.months_duration,
     }
   }
 
