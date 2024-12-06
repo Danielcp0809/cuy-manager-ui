@@ -98,7 +98,7 @@ function BreedingEventForm(props: BreedingEventFormProps) {
   const maxMonths = 18;
 
   const updateCounter = (action: "increase" | "decrease") => {
-    const value = monthsDuration ? Number(monthsDuration) : 0; // 6 months by default
+    const value = monthsDuration ? Number(monthsDuration) : 0;
     let amount = action === "increase" ? value + 1 : value - 1;
     if (amount < 0) amount = 0;
     if (amount > maxMonths) amount = maxMonths;
@@ -170,7 +170,7 @@ function BreedingEventForm(props: BreedingEventFormProps) {
               <Controller
                 name="date"
                 control={control}
-                rules={{ required: "La fecha de nacimiento es obligatoria" }}
+                rules={{ required: "La fecha de empadre es obligatoria" }}
                 render={({ field }) => (
                   <DatePicker
                     {...field}
