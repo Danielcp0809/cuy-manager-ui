@@ -20,11 +20,12 @@ interface HeaderProps {
   formDisclosure: ReturnType<typeof useDisclosure>;
   loading: boolean;
   isValid: boolean;
+  modalFormSize?: string;
   onSaveForm: () => void;
 }
 
 function Header(props: HeaderProps) {
-  const { form, formTitle, onSaveForm, formDisclosure, loading, isValid } =
+  const { form, formTitle, onSaveForm, formDisclosure, loading, isValid, modalFormSize } =
     props;
   const { isOpen, onOpen, onClose } = formDisclosure;
   const initialRef = React.useRef<HTMLInputElement>(null);
@@ -49,7 +50,7 @@ function Header(props: HeaderProps) {
         finalFocusRef={initialRef}
         isOpen={isOpen}
         onClose={closeForm}
-        size="4xl"
+        size={modalFormSize ?? '4xl'}
       >
         <ModalOverlay />
         <ModalContent>
