@@ -11,6 +11,7 @@ import CageDetails from "../../views/admin/cages_details/CageDetails";
 import ForgotPassword from "../../views/auth/forgotPassword/ForgotPassword";
 import Events from "../../views/admin/events/Events";
 import BreedingEvent from "../../views/admin/events/routes/breedingEvent/BreedingEvent";
+import PurchaseEvent from "../../views/admin/events/routes/purchaseEvent/PurchaseEvent";
 
 const routes: IRoute[] = [
     {
@@ -63,11 +64,18 @@ const routes: IRoute[] = [
         component: <Events />,
     },
     {
-        name: "Empadre",
+        name: "Empadres",
         layout: "/admin",
-        path: "/eventos/empadre",
+        path: "/eventos/empadres",
         hidden: true,
         component: <BreedingEvent />,
+    },
+    {
+        name: "Compras",
+        layout: "/admin",
+        path: "/eventos/compras",
+        hidden: true,
+        component: <PurchaseEvent />,
     },
 ]
 
