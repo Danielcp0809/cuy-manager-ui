@@ -15,37 +15,37 @@ function Events(props: EventsProps) {
     {
       title: "Compra",
       img: salesEventImg,
-      redirect: "/admin/eventos/compra",
+      redirect: "/admin/eventos/compras",
       description: "Registra la adquisición de cuyes.",
     },
     {
       title: "Venta",
       img: purchaseEventImg,
-      redirect: "/admin/eventos/venta",
+      redirect: "/admin/eventos/ventas",
       description: "Registra las ventas de cuyes.",
     },
     {
       title: "Empadre",
       img: breedingEventImg,
-      redirect: "/admin/eventos/empadre",
+      redirect: "/admin/eventos/empadres",
       description: "Controla los empadres de cuyes.",
     },
     {
       title: "Muerte",
       img: deathEventImg,
-      redirect: "/admin/eventos/muerte",
+      redirect: "/admin/eventos/muertes",
       description: "Registra las pérdidas por mortalidad.",
     },
     {
       title: "Sanidad",
       img: healthEventImg,
-      redirect: "/admin/eventos/sanidad",
+      redirect: "/admin/eventos/sanidades",
       description: "Gestiona eventos sanitarios de los cuyes.",
     },
     {
       title: "Engorde",
       img: fatteningEventImg,
-      redirect: "/admin/eventos/engorde",
+      redirect: "/admin/eventos/engordes",
       description: "Supervisa el engorde de cuyes.",
     },
   ];
