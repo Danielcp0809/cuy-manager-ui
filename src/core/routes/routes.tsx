@@ -12,6 +12,7 @@ import ForgotPassword from "../../views/auth/forgotPassword/ForgotPassword";
 import Events from "../../views/admin/events/Events";
 import BreedingEvent from "../../views/admin/events/routes/breedingEvent/BreedingEvent";
 import PurchaseEvent from "../../views/admin/events/routes/purchaseEvent/PurchaseEvent";
+import SaleEvent from "../../views/admin/events/routes/saleEvent/SaleEvent";
 
 const routes: IRoute[] = [
     {
@@ -76,6 +77,13 @@ const routes: IRoute[] = [
         path: "/eventos/compras",
         hidden: true,
         component: <PurchaseEvent />,
+    },
+    {
+        name: "Ventas",
+        layout: "/admin",
+        path: "/eventos/ventas",
+        hidden: true,
+        component: <SaleEvent />,
     },
 ]
 
