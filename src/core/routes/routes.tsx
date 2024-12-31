@@ -13,6 +13,7 @@ import Events from "../../views/admin/events/Events";
 import BreedingEvent from "../../views/admin/events/routes/breedingEvent/BreedingEvent";
 import PurchaseEvent from "../../views/admin/events/routes/purchaseEvent/PurchaseEvent";
 import SaleEvent from "../../views/admin/events/routes/saleEvent/SaleEvent";
+import DeadEvent from "../../views/admin/events/routes/deadEvent/DeadEvent";
 
 const routes: IRoute[] = [
     {
@@ -84,6 +85,13 @@ const routes: IRoute[] = [
         path: "/eventos/ventas",
         hidden: true,
         component: <SaleEvent />,
+    },
+    {
+        name: "Muertes",
+        layout: "/admin",
+        path: "/eventos/muertes",
+        hidden: true,
+        component: <DeadEvent />,
     },
 ]
 
