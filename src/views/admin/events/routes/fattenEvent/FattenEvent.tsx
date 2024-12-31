@@ -78,7 +78,7 @@ function FattenEvent(props: FattenEventProps) {
       <Header
         form={<FattenEventForm useFormInstance={useFormInstance} />}
         modalFormSize="md"
-        formTitle="Crear nueva compra"
+        formTitle="Crear nuevo evento de engorde"
         formDisclosure={formDisclosure}
         onSaveForm={handleClickSave}
         loading={loading}
