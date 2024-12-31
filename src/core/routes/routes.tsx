@@ -15,6 +15,7 @@ import PurchaseEvent from "../../views/admin/events/routes/purchaseEvent/Purchas
 import SaleEvent from "../../views/admin/events/routes/saleEvent/SaleEvent";
 import DeadEvent from "../../views/admin/events/routes/deadEvent/DeadEvent";
 import HealthEvent from "../../views/admin/events/routes/healthEvent/HealthEvent";
+import FattenEvent from "../../views/admin/events/routes/fattenEvent/FattenEvent";
 
 const routes: IRoute[] = [
     {
@@ -100,6 +101,13 @@ const routes: IRoute[] = [
         path: "/eventos/sanidades",
         hidden: true,
         component: <HealthEvent />,
+    },
+    {
+        name: "Engordes",
+        layout: "/admin",
+        path: "/eventos/engordes",
+        hidden: true,
+        component: <FattenEvent />,
     },
 ]
 
