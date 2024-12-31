@@ -14,6 +14,7 @@ import BreedingEvent from "../../views/admin/events/routes/breedingEvent/Breedin
 import PurchaseEvent from "../../views/admin/events/routes/purchaseEvent/PurchaseEvent";
 import SaleEvent from "../../views/admin/events/routes/saleEvent/SaleEvent";
 import DeadEvent from "../../views/admin/events/routes/deadEvent/DeadEvent";
+import HealthEvent from "../../views/admin/events/routes/healthEvent/HealthEvent";
 
 const routes: IRoute[] = [
     {
@@ -92,6 +93,13 @@ const routes: IRoute[] = [
         path: "/eventos/muertes",
         hidden: true,
         component: <DeadEvent />,
+    },
+    {
+        name: "Sanidades",
+        layout: "/admin",
+        path: "/eventos/sanidades",
+        hidden: true,
+        component: <HealthEvent />,
     },
 ]
 
