@@ -8,6 +8,8 @@ import Header from "../../components/Header";
 import SaleEventForm from "./components/SaleEventForm";
 import RegularTable from "../../../../../components/table/Table";
 import { salesTableColumns } from "./configurations/sales-table.config";
+import TableFilters, { IFilterData } from "../../../../../components/tableFilters/tableFilters";
+import { saleEventsFiltersConfiguration } from "./configurations/filters.config";
 
 interface SaleEventProps {}
 
@@ -26,6 +28,7 @@ export type NewSaleEventForm = {
 function SaleEvent(props: SaleEventProps) {
   const [loading, setLoading] = React.useState(false);
   const [tableData, setTableData] = React.useState([]);
+  const [filters, setFilters] = React.useState<IFilterData[]>([]);
   const showNotification = useCustomToast();
   const formDisclosure = useDisclosure();
   const authApi = useAuthApi();
@@ -125,6 +128,7 @@ function SaleEvent(props: SaleEventProps) {
     }
   };
 
+
   return (
     <Box display="flex" flexDir="column" rowGap={5}>
       <Header
@@ -136,6 +140,7 @@ function SaleEvent(props: SaleEventProps) {
         loading={loading}
         isValid={isValid}
       />
+      <TableFilters filterOptionsConfiguration={saleEventsFiltersConfiguration} filters={filters} setFilters={setFilters}/>
       <RegularTable
         columnsData={columnsData}
         tableData={tableData}
