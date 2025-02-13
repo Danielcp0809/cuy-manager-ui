@@ -1,12 +1,17 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from "react";
 import useAuthApi from "../../../../../core/hooks/useAuthApi";
 import { Box, useDisclosure } from "@chakra-ui/react";
 import useCustomToast from "../../../../../core/hooks/useToastNotification";
 import { useForm } from "react-hook-form";
 import Header from "../../components/Header";
 import SaleEventForm from "./components/SaleEventForm";
+import RegularTable from "../../../../../components/table/Table";
+import { salesTableColumns } from "./configurations/sales-table.config";
 
 interface SaleEventProps {}
+
+const columnsData = salesTableColumns;
 
 export type NewSaleEventForm = {
   category_id: string;
@@ -20,10 +25,44 @@ export type NewSaleEventForm = {
 
 function SaleEvent(props: SaleEventProps) {
   const [loading, setLoading] = React.useState(false);
+  const [tableData, setTableData] = React.useState([]);
   const showNotification = useCustomToast();
   const formDisclosure = useDisclosure();
   const authApi = useAuthApi();
   const { onClose: onFormClose } = formDisclosure;
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const getData = async () => {
+      try {
+        const response = await getDataCallback(controller);
+        isMounted && setTableData(response.data);
+        setLoading(false);
+      } catch (error: any) {
+        if (error.code === "ERR_CANCELED") return;
+        showNotification(
+          "Error",
+          "error",
+          "Ocurrió un error al obtener las jaulas"
+        );
+        setLoading(false);
+        console.error(error);
+      }
+    };
+    getData();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [authApi]);
+
+  const getDataCallback = async (controller: AbortController) => {
+    return await authApi.get("/events/sales", {
+      signal: controller.signal,
+    });
+  };
 
   const useFormInstance = useForm<NewSaleEventForm>({
     mode: "onChange",
@@ -41,10 +80,25 @@ function SaleEvent(props: SaleEventProps) {
   } = useFormInstance;
 
   const handleClickSave = async () => {
-    setLoading(true);
-    await createNewSaleEvent(useFormInstance.getValues());
-    setLoading(false);
-    onFormClose();
+    try {
+      setLoading(true);
+      await createNewSaleEvent(useFormInstance.getValues());
+      setLoading(false);
+      onFormClose();
+      onRefresh();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onRefresh = async () => {
+    const controller = new AbortController();
+    try {
+      const response = await getDataCallback(controller);
+      setTableData(response.data);
+    } catch (error) {
+      console.error(error)
+    }
   };
 
   const parseFormValues = (data: NewSaleEventForm) => {
@@ -81,6 +135,11 @@ function SaleEvent(props: SaleEventProps) {
         onSaveForm={handleClickSave}
         loading={loading}
         isValid={isValid}
+      />
+      <RegularTable
+        columnsData={columnsData}
+        tableData={tableData}
+        noDataText="No se encontraron ventas"
       />
     </Box>
   );
