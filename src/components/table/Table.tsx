@@ -147,14 +147,22 @@ function RegularTable(props: TableProps) {
                         cell.column.type === "TEXT" ||
                         cell.column.type === "NUMBER"
                       ) {
+                        let value = cell.column.callbacks?.getData
+                          ? cell.column.callbacks.getData(cell.row.original)
+                          : cell.value;
+                        const originalValue = value;
+                        const maxCharacterConfig = cell.column.config?.maxCharacters;
+                        if (maxCharacterConfig && value.length > maxCharacterConfig) value = value.substring(0, maxCharacterConfig) + "...";
                         data = (
-                          <Text
-                            color={textColor}
-                            fontSize="sm"
-                            fontWeight="700"
-                          >
-                            {cell.value}
-                          </Text>
+                          <Tooltip label={value.length > maxCharacterConfig ? originalValue : ""}>
+                            <Text
+                              color={textColor}
+                              fontSize="sm"
+                              fontWeight="700"
+                            >
+                              {value}
+                            </Text>
+                          </Tooltip>
                         );
                       } else if (cell.column.type === "DATE") {
                         data = (
@@ -205,9 +213,9 @@ function RegularTable(props: TableProps) {
                         );
                       } else if (cell.column.type === "LINK") {
                         const getDataCallback = cell.column.callbacks?.getData;
-                        const href = getDataCallback
-                          ? getDataCallback(cell.row.original)
-                          : cell.value;
+                        const cellValue = getDataCallback(cell.row.original);
+                        const href = cellValue.url ? cellValue.url : "";
+                        const label = cellValue.label ? cellValue.label : "";
                         data = (
                           <Button
                             as="a"
@@ -217,7 +225,7 @@ function RegularTable(props: TableProps) {
                             variant="outline"
                             href={href}
                           >
-                            {cell.value}
+                            {label}
                           </Button>
                         );
                       } else if (cell.column.type === "STATUS") {

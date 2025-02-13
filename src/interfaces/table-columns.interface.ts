@@ -7,6 +7,7 @@ export interface ITableColumn {
         successLabel?: string;
         dangerLabel?: string;
         warningLabel?: string;
+        maxCharacters?: number;
     }
     callbacks?: {
         getData: (data: any, rowData?: any) => any;
