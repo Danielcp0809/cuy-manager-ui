@@ -77,7 +77,7 @@ function HealthEvent(props: HealthEventProps) {
             onSaveForm={handleClickSave}
             isValid={isValid}
             formDisclosure={formDisclosure}
-            formTitle="Crear nuevo evento de salud"
+            formTitle="Nuevo evento de sanidad"
         />
     </Box>
   );

@@ -75,7 +75,7 @@ function DeadEvent(props: DeadEventProps) {
       <Header
         form={<DeadEventForm useFormInstance={useFormInstance} />}
         modalFormSize="md"
-        formTitle="Crear nuevo evento de muerte"
+        formTitle="Nuevo evento de muerte"
         formDisclosure={formDisclosure}
         onSaveForm={handleClickSave}
         loading={loading}
