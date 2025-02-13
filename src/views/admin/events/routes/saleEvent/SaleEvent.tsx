@@ -39,7 +39,7 @@ function SaleEvent(props: SaleEventProps) {
     const controller = new AbortController();
     const getData = async () => {
       try {
-        const response = await getDataCallback(controller);
+        const response = await getDataCallback(controller, filters);
         isMounted && setTableData(response.data);
         setLoading(false);
       } catch (error: any) {
@@ -59,10 +59,14 @@ function SaleEvent(props: SaleEventProps) {
       isMounted = false;
       controller.abort();
     };
-  }, [authApi]);
+  }, [authApi, filters]);
 
-  const getDataCallback = async (controller: AbortController) => {
-    return await authApi.get("/events/sales", {
+  const getDataCallback = async (controller: AbortController, filters?: IFilterData[] ) => {
+    const params = new URLSearchParams();
+    for(const filter of filters || []) {
+      params.append(filter.id, filter.selectedOption.value);
+    }
+    return await authApi.get(`/events/sales?${params.toString()}`, {
       signal: controller.signal,
     });
   };
@@ -107,7 +111,7 @@ function SaleEvent(props: SaleEventProps) {
   const parseFormValues = (data: NewSaleEventForm) => {
     return {
       ...data,
-      date: Math.floor(data.date.getTime() / 1000),
+      date: data.date.getTime(),
       unit_price: parseFloat(data.unit_price.toString().replace(/[$,]/g, "")),
     };
   };
@@ -140,7 +144,11 @@ function SaleEvent(props: SaleEventProps) {
         loading={loading}
         isValid={isValid}
       />
-      <TableFilters filterOptionsConfiguration={saleEventsFiltersConfiguration} filters={filters} setFilters={setFilters}/>
+      <TableFilters 
+        filterOptionsConfiguration={saleEventsFiltersConfiguration} 
+        filters={filters} 
+        setFilters={setFilters}
+      />
       <RegularTable
         columnsData={columnsData}
         tableData={tableData}
