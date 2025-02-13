@@ -2,7 +2,7 @@ import { IFilterOptionConfiguration } from "../../../../../../components/tableFi
 
 export const saleEventsFiltersConfiguration: IFilterOptionConfiguration[] = [
     {
-        id: "category",
+        id: "category_id",
         type: "select",
         label: "Categoría",
         fetchConfig: {
@@ -16,7 +16,7 @@ export const saleEventsFiltersConfiguration: IFilterOptionConfiguration[] = [
         }
     },
     {
-        id: "cage",
+        id: "cage_id",
         type: "select",
         label: "Jaula",
         fetchConfig: {
@@ -33,5 +33,15 @@ export const saleEventsFiltersConfiguration: IFilterOptionConfiguration[] = [
         id: "quantity",
         type: "number",
         label: "Cantidad",
+    },
+    {
+        id: "min_date",
+        type: "date",
+        label: "Fecha mínima",
+    },
+    {
+        id: "max_date",
+        type: "date",
+        label: "Fecha máxima",
     }
 ];

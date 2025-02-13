@@ -40,6 +40,11 @@ export const salesTableColumns: ITableColumn[] = [
         type: "NUMBER",
     },
     {
+        header: "Creación",
+        accessor: "date",
+        type: "DATE",
+    },
+    {
         header: "Descripción",
         accessor: "description",
         type: "TEXT",
