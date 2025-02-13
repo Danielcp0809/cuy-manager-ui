@@ -160,8 +160,15 @@ function TableFilters(props: tableFiltersProps) {
     }
   }, [filtersConfiguration, selectedFilterId]);
 
+  const resetForm = () => {
+    setValue("id", "");
+    setValue("selectedOption", "");
+    setSelectedFilter(undefined);
+  };
+
   const closeForm = () => {
     onClose();
+    resetForm();
   };
 
   const mainColor = useColorModeValue("secondaryGray.500", "white");
@@ -246,8 +253,8 @@ function TableFilters(props: tableFiltersProps) {
             />
           </Tag>
         ))}
-        <Button colorScheme="secondaryGray" size="sm" onClick={onOpen}>
-          Agregar filtros +
+        <Button colorScheme="secondaryGray" size="sm" onClick={onOpen} rightIcon={<IoMdAdd />}>
+          Agregar filtros
         </Button>
       </HStack>
       <Modal
@@ -288,7 +295,7 @@ function TableFilters(props: tableFiltersProps) {
                     <Select
                       id="value"
                       isRequired={true}
-                      placeholder="Selecciona un valor"
+                      placeholder="Selecciona el valor del filtro"
                       {...register("selectedOption", {
                         required: "Este campo es requerido",
                       })}
@@ -305,7 +312,7 @@ function TableFilters(props: tableFiltersProps) {
                   {selectedFilter?.type === "text" && (
                     <Input
                       type="text"
-                      placeholder="Ingresa un valor del filtro"
+                      placeholder="Ingresa el valor del filtro"
                       id="value"
                       {...register("selectedOption", {
                         required: "Este campo es requerido",
@@ -316,7 +323,7 @@ function TableFilters(props: tableFiltersProps) {
                     <Box display="flex" gap="5px">
                       <Input
                         type="number"
-                        placeholder="Ingresa un valor del filtro"
+                        placeholder="Ingresa el valor del filtro"
                         id="value"
                         {...register("selectedOption", {
                           required: "Este campo es requerido",

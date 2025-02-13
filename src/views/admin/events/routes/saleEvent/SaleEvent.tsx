@@ -86,12 +86,24 @@ function SaleEvent(props: SaleEventProps) {
     formState: { isValid },
   } = useFormInstance;
 
+  const onResetForm = () => {
+    useFormInstance.reset({
+      category_id: undefined,
+      cage_id: undefined,
+      quantity: undefined,
+      unit_price: undefined,
+      description: undefined,
+      date: new Date(),
+    });
+  };
+
   const handleClickSave = async () => {
     try {
       setLoading(true);
       await createNewSaleEvent(useFormInstance.getValues());
       setLoading(false);
       onFormClose();
+      onResetForm();
       onRefresh();
     } catch (error) {
       console.log(error);
