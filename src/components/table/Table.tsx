@@ -165,13 +165,15 @@ function RegularTable(props: TableProps) {
                           </Tooltip>
                         );
                       } else if (cell.column.type === "DATE") {
+                        const getData = cell.column.callbacks?.getData;
+                        const value = getData ? getData(cell.value) : cell.value;
                         data = (
                           <Text
                             color={textColor}
                             fontSize="sm"
                             fontWeight="700"
                           >
-                            {getFormattedDate(cell.value)}
+                            {getFormattedDate(value)}
                           </Text>
                         );
                       } else if (cell.column.type === "PROGRESS") {
