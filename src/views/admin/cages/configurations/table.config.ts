@@ -7,7 +7,10 @@ export const cageColumns: ITableColumn[] = [
         type: "LINK",
         callbacks: {
             getData: (data: any) => {
-                return `/admin/jaulas/${data.id}`
+                return {
+                    url: `/admin/jaulas/${data.id}`,
+                    label: data.code,
+                }
             }
         },
         config: {
