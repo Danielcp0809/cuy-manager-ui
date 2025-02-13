@@ -1,4 +1,4 @@
-import { IFilterOptionConfiguration } from "../../../../../../components/tableFilters/tableFilters";
+import { IFilterOptionConfiguration } from "../../../../../../components/tableFilters/TableFilters";
 
 export const saleEventsFiltersConfiguration: IFilterOptionConfiguration[] = [
     {

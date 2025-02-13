@@ -8,7 +8,7 @@ import Header from "../../components/Header";
 import SaleEventForm from "./components/SaleEventForm";
 import RegularTable from "../../../../../components/table/Table";
 import { salesTableColumns } from "./configurations/sales-table.config";
-import TableFilters, { IFilterData } from "../../../../../components/tableFilters/tableFilters";
+import TableFilters, { IFilterData } from "../../../../../components/tableFilters/TableFilters";
 import { saleEventsFiltersConfiguration } from "./configurations/filters.config";
 
 interface SaleEventProps {}
