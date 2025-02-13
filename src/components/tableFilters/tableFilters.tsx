@@ -24,11 +24,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import useAuthApi from "../../core/hooks/useAuthApi";
 import useCustomToast from "../../core/hooks/useToastNotification";
 import { IoMdAdd } from "react-icons/io";
 import { GoDash } from "react-icons/go";
+import DatePicker from "react-datepicker";
+import { getFormattedDate } from "../../shared/utils";
 
 interface IOption {
   value: string;
@@ -70,6 +72,7 @@ function TableFilters(props: tableFiltersProps) {
   const {
     watch,
     register,
+    control,
     formState: { isValid },
     setValue,
     trigger,
@@ -177,12 +180,23 @@ function TableFilters(props: tableFiltersProps) {
     const filterConfiguration = filtersConfiguration.find(
       (filter) => filter.id === formValue.id
     );
-    const selectedOption =
-      filterConfiguration?.type === "select"
-        ? filterConfiguration?.options?.find(
-            (option) => option.value === formValue.selectedOption
-          )
-        : { value: formValue.selectedOption, label: formValue.selectedOption };
+    let selectedOption = null;
+
+    if(filterConfiguration?.type === "select") {
+      selectedOption = filterConfiguration?.options?.find(
+        (option) => option.value === formValue.selectedOption
+      );
+    } else if (filterConfiguration?.type === "date") {
+      selectedOption = {
+        value: formValue.selectedOption,
+        label: getFormattedDate(formValue.selectedOption, false),
+      };
+    } else {
+      selectedOption = {
+        value: formValue.selectedOption,
+        label: formValue.selectedOption,
+      };
+    }
     const newFilterData: IFilterData = {
       id: formValue.id,
       label: filterConfiguration?.label ?? "",
@@ -321,6 +335,32 @@ function TableFilters(props: tableFiltersProps) {
                         />
                       </Box>
                     </Box>
+                  )}
+                  {selectedFilter?.type === "date" && (
+                    <Controller
+                      name="selectedOption"
+                      control={control}
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          onChange={(date) => {
+                            if(date){
+                              console.log(date.getTime().toString());
+                              setValue("selectedOption", date.getTime().toString());
+                              trigger("selectedOption");
+                            }
+                          }}
+                          value={
+                            field.value
+                              ? getFormattedDate(field.value, false)
+                              : ""
+                          }
+                          todayButton="Hoy"
+                          placeholderText="Ingresa la fecha"
+                          customInput={<Input width="100%" />}
+                        />
+                      )}
+                    />
                   )}
                 </FormControl>
               )}
