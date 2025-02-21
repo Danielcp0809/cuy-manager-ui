@@ -37,12 +37,6 @@ interface IOption {
   label: string;
 }
 
-interface tableFiltersProps {
-  filterOptionsConfiguration: IFilterOptionConfiguration[];
-  filters: IFilterData[];
-  setFilters: React.Dispatch<React.SetStateAction<IFilterData[]>>;
-}
-
 export interface IFilterData {
   id: string;
   label: string;
@@ -54,20 +48,34 @@ export interface IFilterOptionConfiguration {
   type: "select" | "text" | "number" | "date";
   label: string;
   options?: IOption[];
-  fetchConfig?: {
-    method: "get" | "post" | "put" | "delete";
-    url: string;
-    transformResponse?: (response: any) => IOption[];
-  };
+  fetchConfigId?: string;
+}
+
+export interface IFiltersConfiguration {
+  filterOptionsConfiguration: IFilterOptionConfiguration[];
+  filterFetchConfig: {
+    id: string;
+    fetchConfig?: {
+      method: "get" | "post" | "put" | "delete";
+      url: string;
+      transformResponse?: (response: any) => IOption[];
+    };
+  }[]
 }
 
 type NewFilterForm = {
   id: string;
   selectedOption: string;
-};
+}
+
+interface tableFiltersProps {
+  filtersConfiguration: IFiltersConfiguration;
+  filters: IFilterData[];
+  setFilters: React.Dispatch<React.SetStateAction<IFilterData[]>>;
+}
 
 function TableFilters(props: tableFiltersProps) {
-  const { filterOptionsConfiguration, filters, setFilters } = props;
+  const { filtersConfiguration, filters, setFilters } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     watch,
@@ -82,7 +90,7 @@ function TableFilters(props: tableFiltersProps) {
   const selectedFilterId = watch("id");
   const selectedOption = watch("selectedOption");
   const initialRef = React.useRef<HTMLInputElement>(null);
-  const [filtersConfiguration, setFiltersConfiguration] = React.useState<
+  const [filtersOptionsConfiguration, setFiltersOptionsConfiguration] = React.useState<
     IFilterOptionConfiguration[]
   >([]);
   const [selectedFilter, setSelectedFilter] =
@@ -95,8 +103,8 @@ function TableFilters(props: tableFiltersProps) {
   const showNotification = useCustomToast();
 
   useEffect(() => {
-    setFiltersConfiguration(filterOptionsConfiguration);
-  }, [filterOptionsConfiguration]);
+    setFiltersOptionsConfiguration(filtersConfiguration.filterOptionsConfiguration);
+  }, [filtersConfiguration]);
 
   useEffect(() => {
     let isMounted = true;
@@ -104,7 +112,7 @@ function TableFilters(props: tableFiltersProps) {
     const getData = async () => {
       try {
         // get all options of filters
-        const requests = filterOptionsConfiguration.map(async (filter) => {
+        const requests = filtersConfiguration.filterFetchConfig.map(async (filter) => {
           if (filter.fetchConfig) {
             const response = await authApi[filter.fetchConfig.method](
               filter.fetchConfig.url,
@@ -112,25 +120,30 @@ function TableFilters(props: tableFiltersProps) {
                 signal: controller.signal,
               }
             );
-            return filter.fetchConfig.transformResponse
+            const data = filter.fetchConfig.transformResponse
               ? filter.fetchConfig.transformResponse(response)
               : response.data;
+            return {
+              id: filter.id,
+              options: data,
+            }
           }
-          return [];
+          return {};
         });
         const responses = await Promise.all(requests);
-        const newFiltersConfiguration = filterOptionsConfiguration.map(
-          (filter, index) => {
-            if (filter.fetchConfig) {
+        const newFiltersConfiguration = filtersConfiguration.filterOptionsConfiguration.map(
+          (filter) => {
+            if (filter.fetchConfigId) {
+              const options = responses.find(res => res.id === filter.fetchConfigId)?.options;
               return {
                 ...filter,
-                options: responses[index],
+                options,
               };
             }
             return filter;
           }
         );
-        isMounted && setFiltersConfiguration(newFiltersConfiguration);
+        isMounted && setFiltersOptionsConfiguration(newFiltersConfiguration);
       } catch (error: any) {
         if (error.code === "ERR_CANCELED") return;
         showNotification("Error", "error", "Ocurrió un error las opciones");
@@ -143,11 +156,11 @@ function TableFilters(props: tableFiltersProps) {
       isMounted = false;
       controller.abort();
     };
-  }, [authApi, filterOptionsConfiguration]);
+  }, [authApi, filtersConfiguration]);
 
   useEffect(() => {
     if (selectedFilterId) {
-      const selectedFilter = filtersConfiguration.find(
+      const selectedFilter = filtersOptionsConfiguration.find(
         (filter) => filter.id === selectedFilterId
       );
       if (selectedFilter) {
@@ -158,7 +171,7 @@ function TableFilters(props: tableFiltersProps) {
         }
       }
     }
-  }, [filtersConfiguration, selectedFilterId]);
+  }, [filtersOptionsConfiguration, selectedFilterId]);
 
   const resetForm = () => {
     setValue("id", "");
@@ -184,7 +197,7 @@ function TableFilters(props: tableFiltersProps) {
   const handleAddFilter = () => {
     // show the forms values
     const formValue = watch();
-    const filterConfiguration = filtersConfiguration.find(
+    const filterConfiguration = filtersOptionsConfiguration.find(
       (filter) => filter.id === formValue.id
     );
     let selectedOption = null;
@@ -279,7 +292,7 @@ function TableFilters(props: tableFiltersProps) {
                     required: "Este campo es requerido",
                   })}
                 >
-                  {filtersConfiguration.map(
+                  {filtersOptionsConfiguration.map(
                     (option: IFilterOptionConfiguration, index: number) => (
                       <option key={index} value={option.id}>
                         {option.label}
