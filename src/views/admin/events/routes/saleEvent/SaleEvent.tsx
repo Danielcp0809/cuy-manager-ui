@@ -157,7 +157,7 @@ function SaleEvent(props: SaleEventProps) {
         isValid={isValid}
       />
       <TableFilters 
-        filterOptionsConfiguration={saleEventsFiltersConfiguration} 
+        filtersConfiguration={saleEventsFiltersConfiguration} 
         filters={filters} 
         setFilters={setFilters}
       />
