@@ -49,7 +49,7 @@ function FattenEvent(props: FattenEventProps) {
   const parseFormValues = (data: NewFattenEventForm) => {
     return {
       ...data,
-      date: Math.floor(data.date.getTime() / 1000),
+      date: data.date.getTime(),
     };
   };
 

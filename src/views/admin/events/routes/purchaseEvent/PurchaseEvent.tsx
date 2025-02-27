@@ -49,7 +49,7 @@ function PurchaseEvent(props: PurchaseEventProps) {
   const parseFormValues = (data: NewPurchaseEventForm) => {
     return {
       ...data,
-      date: Math.floor(data.date.getTime() / 1000),
+      date: data.date.getTime(),
       weight: parseFloat(data.weight.toString()),
       total_price: parseFloat(data.total_price.toString().replace(/[$,]/g, "")),
     }

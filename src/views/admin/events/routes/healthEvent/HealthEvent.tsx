@@ -49,7 +49,7 @@ function HealthEvent(props: HealthEventProps) {
   const parseFormValues = (data: NewHealthEventForm) => {
     return {
       ...data,
-      date: Math.floor(data.date.getTime() / 1000),
+      date: data.date.getTime(),
     };
   };
 

@@ -51,7 +51,7 @@ function DeadEvent(props: DeadEventProps) {
   const parseFormValues = (data: NewDeadEventForm) => {
     return {
       ...data,
-      date: Math.floor(data.date.getTime() / 1000),
+      date: data.date.getTime(),
     };
   };
 
