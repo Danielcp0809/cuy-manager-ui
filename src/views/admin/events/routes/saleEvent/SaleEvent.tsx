@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import useAuthApi from "../../../../../core/hooks/useAuthApi";
 import { Box, useDisclosure } from "@chakra-ui/react";
 import useCustomToast from "../../../../../core/hooks/useToastNotification";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import Header from "../../components/Header";
 import SaleEventForm from "./components/SaleEventForm";
 import RegularTable from "../../../../../components/table/Table";
@@ -39,6 +39,7 @@ function SaleEvent(props: SaleEventProps) {
     const controller = new AbortController();
     const getData = async () => {
       try {
+        setLoading(true);
         const response = await getDataCallback(controller, filters);
         isMounted && setTableData(response.data);
         setLoading(false);
@@ -165,6 +166,7 @@ function SaleEvent(props: SaleEventProps) {
         columnsData={columnsData}
         tableData={tableData}
         noDataText="No se encontraron ventas"
+        loading={loading}
       />
     </Box>
   );
