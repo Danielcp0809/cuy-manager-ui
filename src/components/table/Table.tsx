@@ -5,6 +5,7 @@ import {
   Flex,
   IconButton,
   Progress,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -34,13 +35,21 @@ interface TableProps {
   tableData: any;
   title?: string;
   noDataText?: string;
+  loading?: boolean;
   onEditRow?: (data: any) => void;
   onDeleteRow?: (data: any) => void;
 }
 
 function RegularTable(props: TableProps) {
-  const { columnsData, tableData, title, onEditRow, onDeleteRow, noDataText } =
-    props;
+  const {
+    columnsData,
+    tableData,
+    title,
+    onEditRow,
+    onDeleteRow,
+    noDataText,
+    loading,
+  } = props;
 
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
@@ -123,215 +132,246 @@ function RegularTable(props: TableProps) {
               </Tr>
             ))}
           </Thead>
-          <Tbody {...getTableBodyProps()}>
-            {rows.length === 0 ? (
-              <Tr>
-                <Td
-                  colSpan={columns.length + (onEditRow || onDeleteRow ? 1 : 0)}
-                  textAlign="center"
-                  border="none"
-                >
-                  <Text color={textColor} fontSize="sm" fontWeight="700">
-                    {noDataText || "No hay datos para mostrar"}
-                  </Text>
-                </Td>
-              </Tr>
-            ) : (
-              rows.map((row, index) => {
-                prepareRow(row);
-                return (
-                  <Tr {...row.getRowProps()} key={index}>
-                    {row.cells.map((cell: any, index) => {
-                      let data;
-                      if (
-                        cell.column.type === "TEXT" ||
-                        cell.column.type === "NUMBER"
-                      ) {
-                        let value = cell.column.callbacks?.getData
-                          ? cell.column.callbacks.getData(cell.row.original)
-                          : cell.value;
-                        const originalValue = value;
-                        const maxCharacterConfig = cell.column.config?.maxCharacters;
-                        if (maxCharacterConfig && value.length > maxCharacterConfig) value = value.substring(0, maxCharacterConfig) + "...";
-                        data = (
-                          <Tooltip label={value.length > maxCharacterConfig ? originalValue : ""}>
+          {!loading && (
+            <Tbody {...getTableBodyProps()}>
+              {rows.length === 0 ? (
+                <Tr>
+                  <Td
+                    colSpan={
+                      columns.length + (onEditRow || onDeleteRow ? 1 : 0)
+                    }
+                    textAlign="center"
+                    border="none"
+                  >
+                    <Text color={textColor} fontSize="sm" fontWeight="700">
+                      {noDataText || "No hay datos para mostrar"}
+                    </Text>
+                  </Td>
+                </Tr>
+              ) : (
+                rows.map((row, index) => {
+                  prepareRow(row);
+                  return (
+                    <Tr {...row.getRowProps()} key={index}>
+                      {row.cells.map((cell: any, index) => {
+                        let data;
+                        if (
+                          cell.column.type === "TEXT" ||
+                          cell.column.type === "NUMBER"
+                        ) {
+                          let value = cell.column.callbacks?.getData
+                            ? cell.column.callbacks.getData(cell.row.original)
+                            : cell.value;
+                          const originalValue = value;
+                          const maxCharacterConfig =
+                            cell.column.config?.maxCharacters;
+                          if (
+                            maxCharacterConfig &&
+                            value.length > maxCharacterConfig
+                          )
+                            value =
+                              value.substring(0, maxCharacterConfig) + "...";
+                          data = (
+                            <Tooltip
+                              label={
+                                value.length > maxCharacterConfig
+                                  ? originalValue
+                                  : ""
+                              }
+                            >
+                              <Text
+                                color={textColor}
+                                fontSize="sm"
+                                fontWeight="700"
+                              >
+                                {value}
+                              </Text>
+                            </Tooltip>
+                          );
+                        } else if (cell.column.type === "DATE") {
+                          const getData = cell.column.callbacks?.getData;
+                          const value = getData
+                            ? getData(cell.value)
+                            : cell.value;
+                          data = (
                             <Text
                               color={textColor}
                               fontSize="sm"
                               fontWeight="700"
                             >
-                              {value}
+                              {getFormattedDate(value)}
                             </Text>
-                          </Tooltip>
-                        );
-                      } else if (cell.column.type === "DATE") {
-                        const getData = cell.column.callbacks?.getData;
-                        const value = getData ? getData(cell.value) : cell.value;
-                        data = (
-                          <Text
-                            color={textColor}
-                            fontSize="sm"
-                            fontWeight="700"
-                          >
-                            {getFormattedDate(value)}
-                          </Text>
-                        );
-                      } else if (cell.column.type === "PROGRESS") {
-                        const getData = cell.column.callbacks?.getData;
-                        const percentage = getData
-                          ? getData(cell.value, cell.row.original)
-                          : cell.value;
-                        data = (
-                          <Flex align="center">
+                          );
+                        } else if (cell.column.type === "PROGRESS") {
+                          const getData = cell.column.callbacks?.getData;
+                          const percentage = getData
+                            ? getData(cell.value, cell.row.original)
+                            : cell.value;
+                          data = (
+                            <Flex align="center">
+                              <Text
+                                me="10px"
+                                color={textColor}
+                                fontSize="sm"
+                                fontWeight="700"
+                              >
+                                {percentage}%
+                              </Text>
+                              <Progress
+                                variant="table"
+                                colorScheme="brandScheme"
+                                h="8px"
+                                w="80px"
+                                value={percentage}
+                              />
+                            </Flex>
+                          );
+                        } else if (cell.column.type === "CUSTOM") {
+                          const getData = cell.column.callbacks?.getData;
+                          data = (
                             <Text
-                              me="10px"
                               color={textColor}
                               fontSize="sm"
                               fontWeight="700"
                             >
-                              {percentage}%
+                              {getData
+                                ? getData(cell.value, cell.row.original)
+                                : cell.value}
                             </Text>
-                            <Progress
-                              variant="table"
-                              colorScheme="brandScheme"
-                              h="8px"
-                              w="80px"
-                              value={percentage}
-                            />
-                          </Flex>
-                        );
-                      } else if (cell.column.type === "CUSTOM") {
-                        const getData = cell.column.callbacks?.getData;
-                        data = (
-                          <Text
-                            color={textColor}
-                            fontSize="sm"
-                            fontWeight="700"
-                          >
-                            {getData
-                              ? getData(cell.value, cell.row.original)
-                              : cell.value}
-                          </Text>
-                        );
-                      } else if (cell.column.type === "LINK") {
-                        const getDataCallback = cell.column.callbacks?.getData;
-                        const cellValue = getDataCallback(cell.row.original);
-                        const href = cellValue.url ? cellValue.url : "";
-                        const label = cellValue.label ? cellValue.label : "";
-                        data = (
-                          <Button
-                            as="a"
-                            color="brand.500"
-                            fontSize="sm"
-                            fontWeight="700"
-                            variant="outline"
-                            href={href}
-                          >
-                            {label}
-                          </Button>
-                        );
-                      } else if (cell.column.type === "STATUS") {
-                        const getData = cell.column.callbacks?.getData;
-                        const status = getData
-                          ? getData(cell.value, cell.row.original)
-                          : cell.value;
-                        const successLabel =
-                          cell.column.config?.successLabel ?? "Bueno";
-                        const dangerLabel =
-                          cell.column.config?.dangerLabel ?? "Regular";
-                        const warningLabel =
-                          cell.column.config?.warningLabel ?? "Malo";
-                        let color = "gray.500";
-                        let message = "No label";
-                        switch (status) {
-                          case "success":
-                            color = "green";
-                            message = successLabel;
-                            break;
-                          case "danger":
-                            color = "red";
-                            message = dangerLabel;
-                            break;
-                          case "warning":
-                            color = "yellow";
-                            message = warningLabel;
-                            break;
-                          default:
-                            color = "gray.500";
-                            message = "No label";
-                            break;
-                        }
-                        data = <Badge colorScheme={color}>{message}</Badge>;
-                      } else if (cell.column.type === "COLOR") {
-                        data = (
-                          <Box
-                            w="20px"
-                            h="20px"
-                            borderRadius="50%"
-                            bg={cell.value}
-                          />
-                        );
-                      }
-                      return (
-                        <Td
-                          {...cell.getCellProps()}
-                          key={index}
-                          fontSize={{ sm: "14px" }}
-                          minW={{ sm: "auto", md: "200px", lg: "auto" }}
-                          borderColor="transparent"
-                          px={() => (
-                            isRowSticky(cell.column.id) ? { sm: "10px", lg: "20px" } : "20px"
-                          )}
-                          className={
-                            isRowSticky(cell.column.id) ? "sticky-column" : ""
+                          );
+                        } else if (cell.column.type === "LINK") {
+                          const getDataCallback =
+                            cell.column.callbacks?.getData;
+                          const cellValue = getDataCallback(cell.row.original);
+                          const href = cellValue.url ? cellValue.url : "";
+                          const label = cellValue.label ? cellValue.label : "";
+                          data = (
+                            <Button
+                              as="a"
+                              color="brand.500"
+                              fontSize="sm"
+                              fontWeight="700"
+                              variant="outline"
+                              href={href}
+                            >
+                              {label}
+                            </Button>
+                          );
+                        } else if (cell.column.type === "STATUS") {
+                          const getData = cell.column.callbacks?.getData;
+                          const status = getData
+                            ? getData(cell.value, cell.row.original)
+                            : cell.value;
+                          const successLabel =
+                            cell.column.config?.successLabel ?? "Bueno";
+                          const dangerLabel =
+                            cell.column.config?.dangerLabel ?? "Regular";
+                          const warningLabel =
+                            cell.column.config?.warningLabel ?? "Malo";
+                          let color = "gray.500";
+                          let message = "No label";
+                          switch (status) {
+                            case "success":
+                              color = "green";
+                              message = successLabel;
+                              break;
+                            case "danger":
+                              color = "red";
+                              message = dangerLabel;
+                              break;
+                            case "warning":
+                              color = "yellow";
+                              message = warningLabel;
+                              break;
+                            default:
+                              color = "gray.500";
+                              message = "No label";
+                              break;
                           }
+                          data = <Badge colorScheme={color}>{message}</Badge>;
+                        } else if (cell.column.type === "COLOR") {
+                          data = (
+                            <Box
+                              w="20px"
+                              h="20px"
+                              borderRadius="50%"
+                              bg={cell.value}
+                            />
+                          );
+                        }
+                        return (
+                          <Td
+                            {...cell.getCellProps()}
+                            key={index}
+                            fontSize={{ sm: "14px" }}
+                            minW={{ sm: "auto", md: "200px", lg: "auto" }}
+                            borderColor="transparent"
+                            px={() =>
+                              isRowSticky(cell.column.id)
+                                ? { sm: "10px", lg: "20px" }
+                                : "20px"
+                            }
+                            className={
+                              isRowSticky(cell.column.id) ? "sticky-column" : ""
+                            }
+                          >
+                            {data}
+                          </Td>
+                        );
+                      })}
+                      {props.onEditRow || props.onDeleteRow ? (
+                        <Td
+                          fontSize={{ sm: "14px" }}
+                          minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                          borderColor="transparent"
                         >
-                          {data}
+                          <Box>
+                            {onEditRow && (
+                              <Tooltip label="Editar">
+                                <IconButton
+                                  aria-label="Edit"
+                                  icon={<MdEdit />}
+                                  size="sm"
+                                  mr="10px"
+                                  onClick={() =>
+                                    onEditRow && onEditRow(row.original)
+                                  }
+                                />
+                              </Tooltip>
+                            )}
+                            {onDeleteRow && (
+                              <Tooltip label="Eliminar">
+                                <IconButton
+                                  aria-label="Delete"
+                                  icon={<MdDeleteForever />}
+                                  colorScheme="red"
+                                  size="sm"
+                                  onClick={() =>
+                                    onDeleteRow && onDeleteRow(row.original)
+                                  }
+                                />
+                              </Tooltip>
+                            )}
+                          </Box>
                         </Td>
-                      );
-                    })}
-                    {props.onEditRow || props.onDeleteRow ? (
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor="transparent"
-                      >
-                        <Box>
-                          {onEditRow && (
-                            <Tooltip label="Editar">
-                              <IconButton
-                                aria-label="Edit"
-                                icon={<MdEdit />}
-                                size="sm"
-                                mr="10px"
-                                onClick={() =>
-                                  onEditRow && onEditRow(row.original)
-                                }
-                              />
-                            </Tooltip>
-                          )}
-                          {onDeleteRow && (
-                            <Tooltip label="Eliminar">
-                              <IconButton
-                                aria-label="Delete"
-                                icon={<MdDeleteForever />}
-                                colorScheme="red"
-                                size="sm"
-                                onClick={() =>
-                                  onDeleteRow && onDeleteRow(row.original)
-                                }
-                              />
-                            </Tooltip>
-                          )}
-                        </Box>
-                      </Td>
-                    ) : null}
-                  </Tr>
-                );
-              })
-            )}
-          </Tbody>
+                      ) : null}
+                    </Tr>
+                  );
+                })
+              )}
+            </Tbody>
+          )}
         </Table>
+        {loading && (
+          <Flex
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
+            minH="150px"
+          >
+            <Spinner size="xl" thickness="5px" color="brand.500" />
+          </Flex>
+        )}
       </Box>
     </Card>
   );
